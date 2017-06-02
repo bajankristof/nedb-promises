@@ -4,7 +4,7 @@
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,9 @@
   "dependencies": {
     "nedb": "^1.8.0",
     "promise": "^7.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.0.1",
+    "mocha": "^3.4.2"
   }
 }
