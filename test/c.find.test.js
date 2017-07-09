@@ -31,4 +31,16 @@ describe('Find', () => {
 				});
 		});
 	});
+
+  describe(`find().then()`, () => {
+    let db = new Datastore();
+    it('should find all inserted docs', () => {
+      return db.insert(documents)
+        .then(() => {
+          return db.find().then((result) => {
+            expect(result).to.be.an('array').that.has.lengthOf(3);
+          });
+        });
+    });
+  });
 });
