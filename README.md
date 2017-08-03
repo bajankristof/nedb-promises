@@ -76,4 +76,9 @@ This will simply return a Promise.
 #### other( ... )
 All the other methods will take the same arguments as they did before (except the callback) and will return a Promise.
 
+##### update on the update( ... ) method
+This method now (`1.1.1`) accepts upsert and returnUpdatedDocs as it would with the original module.
+
+#### Special thanks to [npeterkamps](https://github.com/npeterkamps) for the useful pull requests!
+
 [Check out the original documentation!](https://github.com/louischatriot/nedb#readme)
