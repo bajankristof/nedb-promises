@@ -3,7 +3,7 @@ A dead-simple promise wrapper for [nedb](https://github.com/louischatriot/nedb#r
 
 ```js
 const Datastore = require('nedb-promises');
-let db = new Datastore('/path/to/db.db');
+let db = Datastore.create('/path/to/db.db');
 
 // #1
 db.find({ field: true })
@@ -28,7 +28,10 @@ db.insert({ doc: 'yourdoc', createdAt: Date.now() })
 ```
 
 ### Usage
-Everything works as the original module, except there are no callbacks, and "loadDatabase" has been renamed to "load". 
+Everything works as the original module, with three major exceptions. 
+* There are no callbacks.
+* `loadDatabase` has been renamed to `load`.
+* You should call `Datastore.create(...)` instead of `new Datastore(...)`. This way you can access the original [nedb](https://github.com/louischatriot/nedb#readme) properties, such as `datastore.persistence`.
 
 [Check out the original documentation!](https://github.com/louischatriot/nedb#readme)
 
@@ -36,7 +39,7 @@ Everything works as the original module, except there are no callbacks, and "loa
 You don't need to call this as the module will automatically detect if the datastore has been loaded or not upon calling any other method. 
 ```js
 const Datastore = require('nedb-promises');
-let db = new Datastore('/path/to/db.db');
+let db = Datastore.create('/path/to/db.db');
 db.load(...)
   .then(...)
   .catch(...)
@@ -52,7 +55,7 @@ Note that `.exec()` is still necessary when `.find()` is in the `.then()` of a P
 
 ```js
 const Datastore = require('nedb-promises');
-let db = new Datastore('/path/to/db.db');
+let db = Datastore.create('/path/to/db.db');
 
 //outside Promise chain
 db.find(...)
