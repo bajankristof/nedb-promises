@@ -8,7 +8,7 @@ const root = path.dirname(__dirname);
 describe(`Create Datastore`, () => {
 	describe(`new Datastore('test.db')`, () => {
 		it('should create test.db based on string filename', () => {
-			let db = new Datastore('test.db');
+			let db = Datastore.create('test.db');
 			return db.load()
 				.then(() => {
 					fs.unlinkSync(
@@ -19,7 +19,7 @@ describe(`Create Datastore`, () => {
 
 	describe(`new Datastore({ filename: 'test.db' })`, () => {
 		it('sould create test.db based on object parameters', () => {
-			let db = new Datastore({ filename: 'test.db' });
+			let db = Datastore.create({ filename: 'test.db' });
 			return db.load()
 				.then(() => {
 					fs.unlinkSync(
@@ -30,7 +30,7 @@ describe(`Create Datastore`, () => {
 
 	describe(`new Datastore()`, () => {
 		it('should create in memory only database', (done) => {
-			let db = new Datastore();
+			let db = Datastore.create();
 			expect(db.__original.inMemoryOnly).to.equal(true);
 			done();
 		});

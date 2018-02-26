@@ -10,7 +10,7 @@ describe('Update', () => {
 
   describe(`single`, () => {
     it('should update single document', () => {
-      let db = new Datastore();
+      let db = Datastore.create();
       return db.insert(documents)
         .then((inserted) => {
           return db.update(
@@ -27,7 +27,7 @@ describe('Update', () => {
 
   describe(`single affected`, () => {
     it('should update and return single document', () => {
-      let db = new Datastore();
+      let db = Datastore.create();
       return db.insert(documents)
         .then((inserted) => {
           return db.update(
@@ -47,7 +47,7 @@ describe('Update', () => {
 
   describe(`bulk`, () => {
     it('should update multiple documents', () => {
-      let db = new Datastore();
+      let db = Datastore.create();
       return db.insert(documents)
         .then((inserted) => {
           return db.update(
@@ -64,7 +64,7 @@ describe('Update', () => {
 
   describe(`bulk affected`, () => {
     it('should update and return multiple documents', () => {
-      let db = new Datastore();
+      let db = Datastore.create();
       return db.insert(documents)
         .then((inserted) => {
           return db.update(

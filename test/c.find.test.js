@@ -9,7 +9,7 @@ describe('Find', () => {
 	];
 
 	describe(`single`, () => {
-		let db = new Datastore();
+		let db = Datastore.create();
 		it('should find the first inserted doc', () => {
 			return db.insert(documents)
 				.then(() => {
@@ -21,7 +21,7 @@ describe('Find', () => {
 	});
 
 	describe(`bulk`, () => {
-		let db = new Datastore();
+		let db = Datastore.create();
 		it('should find all inserted docs', () => {
 			return db.insert(documents)
 				.then(() => {
@@ -33,7 +33,7 @@ describe('Find', () => {
 	});
 
   describe(`find().then()`, () => {
-    let db = new Datastore();
+    let db = Datastore.create();
     it('should find all inserted docs', () => {
       return db.insert(documents)
         .then(() => {
