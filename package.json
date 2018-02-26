@@ -1,6 +1,6 @@
 {
   "name": "nedb-promises",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
