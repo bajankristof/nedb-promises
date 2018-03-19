@@ -1,6 +1,6 @@
 {
   "name": "nedb-promises",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
@@ -22,8 +22,7 @@
   },
   "homepage": "https://github.com/bajankristof/nedb-promises#readme",
   "dependencies": {
-    "nedb": "^1.8.0",
-    "promise": "^8.0.1"
+    "nedb": "^1.8.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
