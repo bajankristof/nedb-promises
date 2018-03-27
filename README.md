@@ -1,4 +1,5 @@
-# nedb-promises
+![nedb-promises](https://github.com/bajankristof/nedb-promises/blob/master/logo.svg "nedb-promises")
+
 A dead-simple promise wrapper for [nedb](https://github.com/louischatriot/nedb#readme).
 
 ```js
