@@ -1,2 +1,2 @@
-const Datastore = require('./lib/Datastore');
+const Datastore = require('./src/Datastore');
 module.exports = Datastore;

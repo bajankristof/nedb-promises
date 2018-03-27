@@ -1,5 +1,5 @@
 const {expect} = require('chai'),
-	Datastore = require('../lib/Datastore');
+	Datastore = require('../src/Datastore');
 
 describe('Find', () => {
 	let documents = [

@@ -1,7 +1,7 @@
 const fs = require('fs'),
 	path = require('path'),
 	{expect} = require('chai'),
-	Datastore = require('../lib/Datastore');
+	Datastore = require('../src/Datastore');
 
 const root = path.dirname(__dirname);
 
