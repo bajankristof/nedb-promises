@@ -2,13 +2,29 @@ const
 	Cursor = require('./Cursor'),
 	OriginalDatastore = require('nedb')
 
+/**
+ * @class
+ */
 class Datastore {
+	/**
+	 * Datastore constructor...
+	 *
+	 * You should use `Datastore.create(...)` instead
+	 * of `new Datastore(...)`. With that you can access
+	 * the original datastore's properties such as `datastore.persistance`.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#creatingloading-a-database
+	 * 
+	 * @param  {Object} [options]
+	 * @return {static}
+	 */
 	constructor(options) {
 		Object.defineProperties(this, {
 			__loaded: {
 				enumerable: false,
 				writable: true,
-				value: false
+				value: null
 			},
 
 			__original: {
@@ -20,21 +36,47 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * Load the datastore.
+	 * @return {Promise}
+	 */
 	load() {
-		if ( !! this.__loaded) {
-			return Promise.resolve()
+		if ( ! (this.__loaded instanceof Promise)) {
+			this.__loaded = new Promise((resolve, reject) => {
+				this.__original.loadDatabase((error) => {
+					return error
+						? reject(error)
+						: resolve()
+				})
+			})
 		}
 
-		return new Promise((resolve, reject) => {
-			this.__original.loadDatabase((error) => {
-				return error
-					? reject(error)
-					: resolve()
-			})
-		})
+		return this.__loaded
 	}
 
-	find(query, projection) {
+	/**
+	 * Find documents that match a query.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#finding-documents
+	 *
+	 * There are differences minor in how the cursor works though.
+	 *
+	 * @example
+	 * datastore.find({ ... }).sort({ ... }).exec().then(...)
+	 *
+	 * @example
+	 * datastore.find({ ... }).sort({ ... }).then(...)
+	 *
+	 * @example
+	 * // in an async function
+	 * await datastore.find({ ... }).sort({ ... })
+	 * 
+	 * @param  {Object} [query]
+	 * @param  {Object} [projection]
+	 * @return {Cursor}
+	 */
+	find(query = {}, projection) {
 		if (typeof projection === 'function') {
 			projection = {}
 		}
@@ -45,7 +87,17 @@ class Datastore {
 		)
 	}
 
-	findOne(query, projection) {
+	/**
+	 * Find a document that matches a query.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#finding-documents
+	 * 
+	 * @param  {Object} [query]
+	 * @param  {Object} [projection]
+	 * @return {Promise.<Object>}
+	 */
+	findOne(query = {}, projection) {
 		if (typeof projection === 'function') {
 			projection = {}
 		}
@@ -65,6 +117,15 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * Insert a document or documents.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#inserting-documents
+	 * 
+	 * @param  {Object|Object[]} docs
+	 * @return {Promise.<Object|Object[]>}
+	 */
 	insert(docs) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
@@ -77,6 +138,22 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * Update documents that match a query.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#updating-documents
+	 *
+	 * If you set `options.returnUpdatedDocs`,
+	 * the returned promise will resolve with
+	 * an object (if `options.multi` is `false`) or
+	 * with an array of objects.
+	 * 
+	 * @param  {Object} query
+	 * @param  {Object} update
+	 * @param  {Object} [options]
+	 * @return {Promise.<number|Object|Object[]>}
+	 */
 	update(query, update, options = {}) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
@@ -96,7 +173,17 @@ class Datastore {
 		})
 	}
 
-	remove(query, options = {}) {
+	/**
+	 * Remove documents that match a query.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#removing-documents
+	 * 
+	 * @param  {Object} [query]
+	 * @param  {Object} [options]
+	 * @return {Promise.<number>}
+	 */
+	remove(query = {}, options = {}) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
 				this.__original.remove(
@@ -112,7 +199,16 @@ class Datastore {
 		})
 	}
 
-	count(query) {
+	/**
+	 * Count documents that match a query.
+	 *
+	 * It's basically the same as the original:
+	 * https://github.com/louischatriot/nedb#counting-documents
+	 * 
+	 * @param  {Object} [query]
+	 * @return {Promise.<number>}
+	 */
+	count(query = {}) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
 				this.__original.count(query, (error, result) => {
@@ -124,6 +220,12 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * https://github.com/louischatriot/nedb#indexing
+	 * 
+	 * @param  {Object} options
+	 * @return {Promise}
+	 */
 	ensureIndex(options) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
@@ -136,6 +238,12 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * https://github.com/louischatriot/nedb#indexing
+	 * 
+	 * @param  {string} field
+	 * @return {Promise}
+	 */
 	removeIndex(field) {
 		return this.load().then(() => {
 			return new Promise((resolve, reject) => {
@@ -148,6 +256,19 @@ class Datastore {
 		})
 	}
 
+	/**
+	 * Create a database instance.
+	 *
+	 * Use this over `new Datastore(...)` to access
+	 * original nedb datastore properties, such as
+	 * `datastore.persistance`.
+	 *
+	 * For more information visit:
+	 * https://github.com/louischatriot/nedb#creatingloading-a-database
+	 * 
+	 * @param  {string|Object} options
+	 * @return {Proxy.<static>}
+	 */
 	static create(options) {
 		return new Proxy(new this(options), {
 			get(target, key) {

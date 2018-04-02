@@ -1,2 +1,1 @@
-const Datastore = require('./src/Datastore');
-module.exports = Datastore;
+module.exports = require('./src/Datastore')

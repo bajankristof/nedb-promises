@@ -1,46 +1,47 @@
-const {expect} = require('chai'),
-	Datastore = require('../src/Datastore');
+const
+    { expect } = require('chai'),
+	Datastore = require('../src/Datastore')
 
-describe('Find', () => {
+describe('testing document finding', () => {
 	let documents = [
 		{ name: 'first document' },
 		{ name: 'second document' },
 		{ name: 'third document' }
-	];
+	]
 
-	describe(`single`, () => {
-		let db = Datastore.create();
+	describe('single', () => {
+		let datastore = Datastore.create()
 		it('should find the first inserted doc', () => {
-			return db.insert(documents)
-				.then(() => {
-					return db.findOne();
+			return datastore.insert(documents)
+				.then((inserted) => {
+					return datastore.findOne()
 				}).then((result) => {
-					expect(result).to.be.an('object').that.has.all.keys('_id', 'name');
-				});
-		});
-	});
+					expect(result).to.be.an('object').that.has.all.keys('_id', 'name')
+				})
+		})
+	})
 
-	describe(`bulk`, () => {
-		let db = Datastore.create();
+	describe('bulk', () => {
+		let datastore = Datastore.create()
 		it('should find all inserted docs', () => {
-			return db.insert(documents)
+			return datastore.insert(documents)
 				.then(() => {
-					return db.find().exec();
+					return datastore.find().exec()
 				}).then((result) => {
-					expect(result).to.be.an('array').that.has.lengthOf(3);
-				});
-		});
-	});
+					expect(result).to.be.an('array').that.has.lengthOf(3)
+				})
+		})
+	})
 
-  describe(`find().then()`, () => {
-    let db = Datastore.create();
-    it('should find all inserted docs', () => {
-      return db.insert(documents)
-        .then(() => {
-          return db.find().then((result) => {
-            expect(result).to.be.an('array').that.has.lengthOf(3);
-          });
-        });
-    });
-  });
-});
+    describe('find().then()', () => {
+        let datastore = Datastore.create()
+        it('should find all inserted docs', () => {
+            return datastore.insert(documents)
+                .then(() => {
+                    return datastore.find().then((result) => {
+                        expect(result).to.be.an('array').that.has.lengthOf(3)
+                    })
+                })
+        })
+    })
+})

@@ -1,38 +1,41 @@
-const fs = require('fs'),
+const
+	fs = require('fs'),
 	path = require('path'),
-	{expect} = require('chai'),
-	Datastore = require('../src/Datastore');
+	{ expect } = require('chai'),
+	Datastore = require('../src/Datastore')
 
-const root = path.dirname(__dirname);
+const root = path.dirname(__dirname)
 
-describe(`Create Datastore`, () => {
-	describe(`new Datastore('test.db')`, () => {
+describe('testing datastore creation', () => {
+	describe('new Datastore(\'test.db\')', () => {
 		it('should create test.db based on string filename', () => {
-			let db = Datastore.create('test.db');
-			return db.load()
+			let datastore = Datastore.create('test.db')
+			return datastore.load()
 				.then(() => {
 					fs.unlinkSync(
-						path.join(root, 'test.db'));
-				});
-		});
-	});
+						path.join(root, 'test.db')
+					)
+				})
+		})
+	})
 
-	describe(`new Datastore({ filename: 'test.db' })`, () => {
+	describe('new Datastore({ filename: \'test.db\' })', () => {
 		it('sould create test.db based on object parameters', () => {
-			let db = Datastore.create({ filename: 'test.db' });
-			return db.load()
+			let datastore = Datastore.create({ filename: 'test.db' })
+			return datastore.load()
 				.then(() => {
 					fs.unlinkSync(
-						path.join(root, 'test.db'));
-				}).then();
-		});
-	});
+						path.join(root, 'test.db')
+					)
+				})
+		})
+	})
 
-	describe(`new Datastore()`, () => {
+	describe('new Datastore()', () => {
 		it('should create in memory only database', (done) => {
-			let db = Datastore.create();
-			expect(db.__original.inMemoryOnly).to.equal(true);
-			done();
-		});
-	});
-});
+			let datastore = Datastore.create()
+			expect(datastore.__original.inMemoryOnly).to.equal(true)
+			done()
+		})
+	})
+})
