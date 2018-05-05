@@ -5,7 +5,7 @@ const
  * @class
  */
 class Cursor {
-	constructor(original, prerequisite) {
+	constructor(original, prerequisite, callback) {
 		if ( ! (original instanceof OriginalCursor)) {
 			throw new TypeError(`Unexpected ${typeof original}, expected: Cursor (nedb/lib/cursor)`)
 		}
@@ -27,6 +27,13 @@ class Cursor {
 				enumerable: false,
 				writable: false,
 				value: prerequisite
+			},
+
+			__callback: {
+				configurable: false,
+				enumerable: false,
+				writable: false,
+				value: callback
 			}
 		})
 	}
@@ -77,6 +84,10 @@ class Cursor {
 		return this.__prerequisite.then(() => {
 			return new Promise((resolve, reject) => {
 				this.__original.exec((error, result) => {
+					if ('function' === typeof this.__callback) {
+						this.__callback(error, result)
+					}
+
 					return error
 						? reject(error)
 						: resolve(result)

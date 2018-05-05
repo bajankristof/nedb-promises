@@ -95,19 +95,37 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 
 ## Datastore
 **Kind**: global class  
+**Summary**: As of v2.0.0 the Datastore class extends node's built 
+in EventEmitter class and implements each method as an event
+plus additional error events.
+
+All event callbacks will be passed the same type of values,
+the first being the datastore, then the operation result (if there is any)
+and then the arguments of the called method. (Check out the first example!)
+
+All events have a matching error event that goes by the name of `${method}Error`,
+for example `findError` or `loadError`. The callbacks of these events will receive
+the same parameters as the normal event handlers except that instead of the 
+operation result there will be an operation error. (Check out the second example!)
+
+A generic `error` event is also available. This event will be emitted at any of
+the above error events. The callbacks of this event will receive the same parameters
+as the specific error event handlers except that there will be one more parameter 
+passed between the datastore and the error object, that being the name of the method
+that failed. (Check out the third example!)  
 
 * [Datastore](#Datastore)
     * [new Datastore([options])](#new_Datastore_new)
     * _instance_
-        * [.load()](#Datastore+load) ⇒ <code>Promise</code>
+        * [.load()](#Datastore+load) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.find([query], [projection])](#Datastore+find) ⇒ [<code>Cursor</code>](#Cursor)
         * [.findOne([query], [projection])](#Datastore+findOne) ⇒ <code>Promise.&lt;Object&gt;</code>
         * [.insert(docs)](#Datastore+insert) ⇒ <code>Promise.&lt;(Object\|Array.&lt;Object&gt;)&gt;</code>
         * [.update(query, update, [options])](#Datastore+update) ⇒ <code>Promise.&lt;(number\|Object\|Array.&lt;Object&gt;)&gt;</code>
         * [.remove([query], [options])](#Datastore+remove) ⇒ <code>Promise.&lt;number&gt;</code>
         * [.count([query])](#Datastore+count) ⇒ <code>Promise.&lt;number&gt;</code>
-        * [.ensureIndex(options)](#Datastore+ensureIndex) ⇒ <code>Promise</code>
-        * [.removeIndex(field)](#Datastore+removeIndex) ⇒ <code>Promise</code>
+        * [.ensureIndex(options)](#Datastore+ensureIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
+        * [.removeIndex(field)](#Datastore+removeIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * _static_
         * [.create(options)](#Datastore.create) ⇒ <code>Proxy.&lt;static&gt;</code>
 
@@ -135,9 +153,41 @@ https://github.com/louischatriot/nedb#creatingloading-a-database
     </tr>  </tbody>
 </table>
 
+**Example**  
+```js
+let datastore = Datastore.create()
+datastore.on('update', (datastore, result, query, update, options) => {
+})
+datastore.on('load', (datastore) => {
+    // this event doesn't have a result
+})
+datastore.on('ensureIndex', (datastore, options) => {
+    // this event doesn't have a result
+    // but it has the options argument which will be passed to the
+    // event handlers
+})
+```
+**Example**  
+```js
+let datastore = Datastore.create()
+datastore.on('updateError', (datastore, error, query, update, options) => {
+})
+datastore.on('loadError', (datastore, error) => {
+})
+datastore.on('ensureIndexError', (datastore, error, options) => {
+})
+```
+**Example**  
+```js
+let datastore = Datastore.create()
+datastore.on('error', (datastore, event, error, ...args) => {
+    // for example
+    // datastore, 'find', error, [{ foo: 'bar' }, {}]
+})
+```
 <a name="Datastore+load"></a>
 
-### datastore.load() ⇒ <code>Promise</code>
+### datastore.load() ⇒ <code>Promise.&lt;undefined&gt;</code>
 Load the datastore.
 
 **Kind**: instance method of [<code>Datastore</code>](#Datastore)  
@@ -299,7 +349,7 @@ https://github.com/louischatriot/nedb#counting-documents
 
 <a name="Datastore+ensureIndex"></a>
 
-### datastore.ensureIndex(options) ⇒ <code>Promise</code>
+### datastore.ensureIndex(options) ⇒ <code>Promise.&lt;undefined&gt;</code>
 https://github.com/louischatriot/nedb#indexing
 
 **Kind**: instance method of [<code>Datastore</code>](#Datastore)  
@@ -317,7 +367,7 @@ https://github.com/louischatriot/nedb#indexing
 
 <a name="Datastore+removeIndex"></a>
 
-### datastore.removeIndex(field) ⇒ <code>Promise</code>
+### datastore.removeIndex(field) ⇒ <code>Promise.&lt;undefined&gt;</code>
 https://github.com/louischatriot/nedb#indexing
 
 **Kind**: instance method of [<code>Datastore</code>](#Datastore)  
