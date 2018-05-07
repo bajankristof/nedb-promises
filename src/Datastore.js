@@ -318,18 +318,16 @@ class Datastore extends EventEmitter {
 	 * @return {Promise.<undefined>}
 	 */
 	ensureIndex(options) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.ensureIndex(options, (error) => {
-					if (error) {
-						this.emit('ensureIndexError', this, error, options)
-						this.emit('error', this, 'ensureIndex', error, options)
-						reject(error)
-					} else {
-						this.emit('ensureIndex', this, options)
-						resolve()
-					}
-				})
+		return new Promise((resolve, reject) => {
+			this.__original.ensureIndex(options, (error) => {
+				if (error) {
+					this.emit('ensureIndexError', this, error, options)
+					this.emit('error', this, 'ensureIndex', error, options)
+					reject(error)
+				} else {
+					this.emit('ensureIndex', this, options)
+					resolve()
+				}
 			})
 		})
 	}
@@ -341,18 +339,16 @@ class Datastore extends EventEmitter {
 	 * @return {Promise.<undefined>}
 	 */
 	removeIndex(field) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.removeIndex(field, (error) => {
-					if (error) {
-						this.emit('removeIndexError', this, error, field)
-						this.emit('error', this, 'removeIndex', error, field)
-						reject(error)
-					} else {
-						this.emit('removeIndex', this, field)
-						resolve()
-					}
-				})
+		return new Promise((resolve, reject) => {
+			this.__original.removeIndex(field, (error) => {
+				if (error) {
+					this.emit('removeIndexError', this, error, field)
+					this.emit('error', this, 'removeIndex', error, field)
+					reject(error)
+				} else {
+					this.emit('removeIndex', this, field)
+					resolve()
+				}
 			})
 		})
 	}

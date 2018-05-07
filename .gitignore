@@ -18,4 +18,5 @@ node_modules
 *.swp
 *~
 *.swo
+.DS_Store
 test.db
