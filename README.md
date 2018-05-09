@@ -42,7 +42,7 @@ async function findSorted(page, perPage = 10) {
 Everything works as the original module, with four major exceptions. 
 * There are no callbacks.
 * `loadDatabase` has been renamed to `load`.
-* You should call `Datastore.create(...)` instead of `new Datastore(...)`. This way you can access the original [nedb](https://github.com/louischatriot/nedb#readme) properties, such as `datastore.persistence`.
+* You should call `Datastore.create(...)` instead of `new Datastore(...)`. This way you can access the [original nedb](https://github.com/louischatriot/nedb#readme) properties, such as `datastore.persistence`.
 * As of v2.0.0 the module supports events 😎... Check out the [docs about events](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore)!
 
 Check out the [original docs](https://github.com/louischatriot/nedb#readme)!
