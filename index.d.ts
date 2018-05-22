@@ -95,7 +95,7 @@ declare class Nedb extends EventEmitter {
    * // in an async function
    * await datastore.find({ ... }).sort({ ... })
    */
-  find<T>(query: any, projection?: T): Nedb.Cursor<T>
+  find<T>(query: any, projection?: T): Nedb.Cursor<T[]>
 
   /**
    * Find a document that matches a query.
