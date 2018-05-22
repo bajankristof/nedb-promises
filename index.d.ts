@@ -127,11 +127,24 @@ declare class Nedb extends EventEmitter {
    * an object (if `options.multi` is `false`) or
    * with an array of objects.
    */
-  update(
+
+  update<T>(
     query: any,
     updateQuery: any,
-    options?: Nedb.UpdateOptions
-  ): Promise<number | Object | Object[]>
+    options?: Nedb.UpdateOptions & { returnUpdatedDocs?: false }
+  ): Promise<number>
+
+  update<T>(
+    query: any,
+    updateQuery: any,
+    options?: Nedb.UpdateOptions & { returnUpdatedDocs: true; multi?: false }
+  ): Promise<T & { _id: string }>
+
+  update<T>(
+    query: any,
+    updateQuery: any,
+    options?: Nedb.UpdateOptions & { returnUpdatedDocs: true; multi: true }
+  ): Promise<(T & { _id: string })[]>
 
   /**
    * Remove documents that match a query.
