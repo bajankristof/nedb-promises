@@ -95,7 +95,7 @@ declare class Nedb extends EventEmitter {
    * // in an async function
    * await datastore.find({ ... }).sort({ ... })
    */
-  find<T>(query: any, projection?: T): Nedb.Cursor<T[]>
+  find<T>(query: any, projection?: T): Nedb.Cursor<(T & { _id: string })[]>
 
   /**
    * Find a document that matches a query.
@@ -103,7 +103,7 @@ declare class Nedb extends EventEmitter {
    * It's basically the same as the original:
    * https://github.com/louischatriot/nedb#finding-documents
    */
-  findOne<T>(query: any, projection?: T): Promise<T>
+  findOne<T>(query: any, projection?: T): Promise<T & { _id: string }>
 
   /**
    * Insert a document or documents.
@@ -114,7 +114,7 @@ declare class Nedb extends EventEmitter {
    * @param  {Object|Object[]} docs
    * @return {Promise.<Object|Object[]>}
    */
-  insert<T extends any | any[]>(docs: T): Promise<T>
+  insert<T extends any | any[]>(docs: T): Promise<T & { _id: string }>
 
   /**
    * Update documents that match a query.
