@@ -4,8 +4,14 @@ import { EventEmitter } from 'events'
 // Project: https://github.com/bajankristof/nedb-promises
 // Definitions by: Sam Denty <https://github.com/samdenty99>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-export = Nedb
-export as namespace Nedb
+export = Datastore
+export as namespace Datastore
+
+type Document = {
+  _id: string
+  createdAt?: Date
+  updatedAt?: Date
+}
 
 /**
  * @summary
@@ -59,7 +65,7 @@ export as namespace Nedb
  *
  * @class
  */
-declare class Nedb extends EventEmitter {
+declare class Datastore extends EventEmitter {
   /**
    * Datastore constructor...
    *
@@ -70,12 +76,12 @@ declare class Nedb extends EventEmitter {
    * It's basically the same as the original:
    * https://github.com/louischatriot/nedb#creatingloading-a-database
    */
-  constructor(pathOrOptions?: string | Nedb.DataStoreOptions)
+  constructor(pathOrOptions?: string | Nedb.DatastoreOptions)
 
   /**
    * Load the datastore.
    */
-  load(): void
+  load(): Promise<undefined>
 
   /**
    * Find documents that match a query.
@@ -95,7 +101,7 @@ declare class Nedb extends EventEmitter {
    * // in an async function
    * await datastore.find({ ... }).sort({ ... })
    */
-  find<T>(query: any, projection?: T): Nedb.Cursor<(T & { _id: string })[]>
+  find<T>(query: any, projection?: T): Nedb.Cursor<(T & Document)[]>
 
   /**
    * Find a document that matches a query.
@@ -103,7 +109,7 @@ declare class Nedb extends EventEmitter {
    * It's basically the same as the original:
    * https://github.com/louischatriot/nedb#finding-documents
    */
-  findOne<T>(query: any, projection?: T): Promise<T & { _id: string }>
+  findOne<T>(query: any, projection?: T): Promise<T & Document>
 
   /**
    * Insert a document or documents.
@@ -114,7 +120,7 @@ declare class Nedb extends EventEmitter {
    * @param  {Object|Object[]} docs
    * @return {Promise.<Object|Object[]>}
    */
-  insert<T extends any | any[]>(docs: T): Promise<T & { _id: string }>
+  insert<T extends any | any[]>(docs: T): Promise<T & Document>
 
   /**
    * Update documents that match a query.
@@ -138,13 +144,13 @@ declare class Nedb extends EventEmitter {
     query: any,
     updateQuery: any,
     options?: Nedb.UpdateOptions & { returnUpdatedDocs: true; multi?: false }
-  ): Promise<T & { _id: string }>
+  ): Promise<T & Document>
 
   update<T>(
     query: any,
     updateQuery: any,
     options?: Nedb.UpdateOptions & { returnUpdatedDocs: true; multi: true }
-  ): Promise<(T & { _id: string })[]>
+  ): Promise<(T & Document)[]>
 
   /**
    * Remove documents that match a query.
@@ -182,7 +188,7 @@ declare class Nedb extends EventEmitter {
    * For more information visit:
    * https://github.com/louischatriot/nedb#creatingloading-a-database
    */
-  create(options: Nedb.DataStoreOptions): void
+  create(options: Nedb.DatastoreOptions): Datastore
 }
 
 declare namespace Nedb {
@@ -194,11 +200,7 @@ declare namespace Nedb {
     exec(callback: (err: Error, documents: T[]) => void): void
   }
 
-  interface CursorCount {
-    exec(callback: (err: Error, count: number) => void): void
-  }
-
-  interface DataStoreOptions {
+  interface DatastoreOptions {
     filename?: string // Optional, datastore will be in-memory only if not provided
     inMemoryOnly?: boolean // Optional, default to false
     nodeWebkitAppName?: boolean // Optional, specify the name of your NW app if you want options.filename to be relative to the directory where
