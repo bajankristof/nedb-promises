@@ -108,7 +108,7 @@ for example `findError` or `loadError`. The callbacks of these events will recei
 the same parameters as the normal event handlers except that instead of the 
 operation result there will be an operation error. (Check out the second example!)
 
-A generic `error` event is also available. This event will be emitted at any of
+A generic `__error__` event is also available. This event will be emitted at any of
 the above error events. The callbacks of this event will receive the same parameters
 as the specific error event handlers except that there will be one more parameter 
 passed between the datastore and the error object, that being the name of the method
@@ -180,7 +180,7 @@ datastore.on('ensureIndexError', (datastore, error, options) => {
 **Example**  
 ```js
 let datastore = Datastore.create()
-datastore.on('error', (datastore, event, error, ...args) => {
+datastore.on('__error__', (datastore, event, error, ...args) => {
     // for example
     // datastore, 'find', error, [{ foo: 'bar' }, {}]
 })
