@@ -18,7 +18,7 @@ const
  * the same parameters as the normal event handlers except that instead of the 
  * operation result there will be an operation error. (Check out the second example!)
  *
- * A generic `error` event is also available. This event will be emitted at any of
+ * A generic `__error__` event is also available. This event will be emitted at any of
  * the above error events. The callbacks of this event will receive the same parameters
  * as the specific error event handlers except that there will be one more parameter 
  * passed between the datastore and the error object, that being the name of the method
@@ -48,7 +48,7 @@ const
  *
  * @example
  * let datastore = Datastore.create()
- * datastore.on('error', (datastore, event, error, ...args) => {
+ * datastore.on('__error__', (datastore, event, error, ...args) => {
  *     // for example
  *     // datastore, 'find', error, [{ foo: 'bar' }, {}]
  * })
@@ -63,6 +63,8 @@ class Datastore extends EventEmitter {
 	 * of `new Datastore(...)`. With that you can access
 	 * the original datastore's properties such as `datastore.persistance`.
 	 *
+	 * Create a Datastore instance.
+	 * 
 	 * It's basically the same as the original:
 	 * https://github.com/louischatriot/nedb#creatingloading-a-database
 	 * 
@@ -98,7 +100,7 @@ class Datastore extends EventEmitter {
 				this.__original.loadDatabase((error) => {
 					if (error) {
 						this.emit('loadError', this, error)
-						this.emit('error', this, 'load', error)
+						this.emit('__error__', this, 'load', error)
 						reject(error)
 					} else {
 						this.emit('load', this)
@@ -144,7 +146,7 @@ class Datastore extends EventEmitter {
 			(error, result) => {
 				if (error) {
 					this.emit('findError', this, error, query, projection)
-					this.emit('error', this, 'find', error, query, projection)
+					this.emit('__error__', this, 'find', error, query, projection)
 				} else {
 					this.emit('find', this, result, query, projection)
 				}
@@ -175,7 +177,7 @@ class Datastore extends EventEmitter {
 					(error, result) => {
 						if (error) {
 							this.emit('findOneError', this, error, query, projection)
-							this.emit('error', this, 'findOne', error, query, projection)
+							this.emit('__error__', this, 'findOne', error, query, projection)
 							reject(error)
 						} else {
 							this.emit('findOne', this, result, query, projection)
@@ -202,7 +204,7 @@ class Datastore extends EventEmitter {
 				this.__original.insert(docs, (error, result) => {
 					if (error) {
 						this.emit('insertError', this, error, docs)
-						this.emit('error', this, 'insert', error, docs)
+						this.emit('__error__', this, 'insert', error, docs)
 						reject(error)
 					} else {
 						this.emit('insert', this, result, docs)
@@ -239,7 +241,7 @@ class Datastore extends EventEmitter {
 					(error, numAffected, affectedDocuments, upsert) => {
 						if (error) {
 							this.emit('updateError', this, error, query, update, options)
-							this.emit('error', this, 'update', error, query, update, options)
+							this.emit('__error__', this, 'update', error, query, update, options)
 							reject(error)
 						} else {
 							let result = options.returnUpdatedDocs
@@ -273,7 +275,7 @@ class Datastore extends EventEmitter {
 					(error, result) => {
 						if (error) {
 							this.emit('removeError', this, error, query, options)
-							this.emit('error', this, 'remove', error, query, options)
+							this.emit('__error__', this, 'remove', error, query, options)
 							reject(error)
 						} else {
 							this.emit('remove', this, result, query, options)
@@ -300,7 +302,7 @@ class Datastore extends EventEmitter {
 				this.__original.count(query, (error, result) => {
 					if (error) {
 						this.emit('countError', this, error, query)
-						this.emit('error', this, 'count', error, query)
+						this.emit('__error__', this, 'count', error, query)
 						reject(error)
 					} else {
 						this.emit('count', this, result, query)
@@ -322,7 +324,7 @@ class Datastore extends EventEmitter {
 			this.__original.ensureIndex(options, (error) => {
 				if (error) {
 					this.emit('ensureIndexError', this, error, options)
-					this.emit('error', this, 'ensureIndex', error, options)
+					this.emit('__error__', this, 'ensureIndex', error, options)
 					reject(error)
 				} else {
 					this.emit('ensureIndex', this, options)
@@ -343,7 +345,7 @@ class Datastore extends EventEmitter {
 			this.__original.removeIndex(field, (error) => {
 				if (error) {
 					this.emit('removeIndexError', this, error, field)
-					this.emit('error', this, 'removeIndex', error, field)
+					this.emit('__error__', this, 'removeIndex', error, field)
 					reject(error)
 				} else {
 					this.emit('removeIndex', this, field)
