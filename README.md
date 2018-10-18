@@ -38,6 +38,11 @@ async function findSorted(page, perPage = 10) {
 }
 ```
 
+### Installation
+```sh
+npm install --save nedb-promises
+```
+
 ### Usage
 Everything works as the original module, with four major exceptions. 
 * There are no callbacks.
