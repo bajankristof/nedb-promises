@@ -1,6 +1,6 @@
 {
   "name": "nedb-promises",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,6 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "jsdoc-to-markdown": "^4.0.1",
-    "mocha": "^3.5.3"
+    "mocha": "^5.2.0"
   }
 }
