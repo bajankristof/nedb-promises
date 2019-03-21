@@ -138,6 +138,12 @@ You should use `Datastore.create(...)` instead
 of `new Datastore(...)`. With that you can access
 the original datastore's properties such as `datastore.persistance`.
 
+Create a Datastore instance.
+
+Note that the datastore will be created
+relative to `process.cwd()`
+(unless an absolute path was passed).
+
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#creatingloading-a-database
 
@@ -391,6 +397,10 @@ Create a database instance.
 Use this over `new Datastore(...)` to access
 original nedb datastore properties, such as
 `datastore.persistance`.
+
+Note that the datastore will be created
+relative to `process.cwd()`
+(unless an absolute path was passed).
 
 For more information visit:
 https://github.com/louischatriot/nedb#creatingloading-a-database
