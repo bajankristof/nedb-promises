@@ -10,15 +10,26 @@ describe('testing document finding', () => {
 	]
 
 	describe('single', () => {
-		let datastore = Datastore.create()
+		let datastore = Datastore.create(),
+            insert = datastore.insert(documents)
 		it('should find the first inserted doc', () => {
-			return datastore.insert(documents)
+			return insert
 				.then((inserted) => {
 					return datastore.findOne()
 				}).then((result) => {
 					expect(result).to.be.an('object').that.has.all.keys('_id', 'name')
 				})
 		})
+
+        it('should find the last inserted doc when sorting backwards', () => {
+            return insert
+                .then((inserted) => {
+                    return datastore.findOne().sort({ name: -1 })
+                }).then((result) => {
+                    expect(result).to.be.an('object').that.has.all.keys('_id', 'name')
+                    expect(result.name).to.equal('third document')
+                })
+        })
 	})
 
 	describe('bulk', () => {

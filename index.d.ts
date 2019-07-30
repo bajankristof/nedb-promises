@@ -197,7 +197,7 @@ declare namespace Nedb {
     skip(n: number): Cursor<T>
     limit(n: number): Cursor<T>
     projection(query: any): Cursor<T>
-    exec(callback: (err: Error, documents: T[]) => void): void
+    exec(): Promise<T[]>
   }
 
   interface DatastoreOptions {

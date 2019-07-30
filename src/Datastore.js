@@ -163,34 +163,35 @@ class Datastore extends EventEmitter {
 	 *
 	 * It's basically the same as the original:
 	 * https://github.com/louischatriot/nedb#finding-documents
+	 *
+	 * @example
+	 * datastore.findOne({ ... }).then(...)
+	 *
+	 * @example
+	 * // in an async function
+	 * await datastore.findOne({ ... }).sort({ ... })
 	 * 
 	 * @param  {Object} [query]
 	 * @param  {Object} [projection]
-	 * @return {Promise.<Object>}
+	 * @return {Cursor}
 	 */
 	findOne(query = {}, projection) {
 		if (typeof projection === 'function') {
 			projection = {}
 		}
 
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.findOne(
-					query,
-					projection,
-					(error, result) => {
-						if (error) {
-							this.emit('findOneError', this, error, query, projection)
-							this.emit('__error__', this, 'findOne', error, query, projection)
-							reject(error)
-						} else {
-							this.emit('findOne', this, result, query, projection)
-							resolve(result)
-						}
-					}
-				)
-			})
-		})
+		return new Cursor(
+			this.__original.findOne(query, projection),
+			this.load(),
+			(error, result) => {
+				if (error) {
+					this.emit('findOneError', this, error, query, projection)
+					this.emit('__error__', this, 'findOne', error, query, projection)
+				} else {
+					this.emit('findOne', this, result, query, projection)
+				}
+			}
+		)
 	}
 
 	/**
@@ -296,25 +297,32 @@ class Datastore extends EventEmitter {
 	 *
 	 * It's basically the same as the original:
 	 * https://github.com/louischatriot/nedb#counting-documents
+	 *
+	 * @example
+	 * datastore.count({ ... }).limit(...).then(...)
+	 *
+	 * @example
+	 * // in an async function
+	 * await datastore.count({ ... })
+	 * // or
+	 * await datastore.count({ ... }).sort(...).limit(...)
 	 * 
 	 * @param  {Object} [query]
-	 * @return {Promise.<number>}
+	 * @return {Cursor}
 	 */
 	count(query = {}) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.count(query, (error, result) => {
-					if (error) {
-						this.emit('countError', this, error, query)
-						this.emit('__error__', this, 'count', error, query)
-						reject(error)
-					} else {
-						this.emit('count', this, result, query)
-						resolve(result)
-					}
-				})
-			})
-		})
+		return new Cursor(
+			this.__original.count(query),
+			this.load(),
+			(error, result) => {
+				if (error) {
+					this.emit('countError', this, error, query)
+					this.emit('__error__', this, 'count', error, query)
+				} else {
+					this.emit('count', this, result, query)
+				}
+			}
+		)
 	}
 
 	/**

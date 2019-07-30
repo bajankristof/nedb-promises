@@ -62,13 +62,9 @@ datastore.load(...)
   .catch(...)
 ```
 
-#### find( [query], [projection] )
-This will return a Cursor object that works the same way it did before except when you call "exec" it takes no arguments and returns a Promise.
-
-##### update on Cursor objects
-With the `1.1.0` update now you can simply call `.then(...)` on a Cursor to request the documents in a Promise. 
-
-Note that `.exec()` is still necessary when `.find()` is in the `.then()` of a Promise chain (otherwise the promise would be resolved with the Cursor object).
+#### find( [query], [projection] ), findOne( [query], [projection] ), count( [query] )
+These methods will return a Cursor object that works the same way it did before except when you call "exec" it takes no arguments and returns a Promise.
+The cool thing about this implementation of the Cursor is that it behaves like a Promise. Meaning that you can `await` it and you can call `.then()` on it.
 
 ```js
 const Datastore = require('nedb-promises')
@@ -82,16 +78,16 @@ datastore.find(...)
 //insinde Promise chain
 datastore.insert(...)
   .then(() => {
-    return datastore.find(...).exec();
+    return datastore.find(...)
   })
   .then(
     // use the retrieved documents
   )
-```
 
-#### findOne( [query], [projection])
-Unlike "find" this will not return a Cursor since it makes no sense to sort or limit a single document.
-This will simply return a Promise.
+;(async () => {
+  await datastore.find(...).sort(...).limit()
+})()
+```
 
 #### other( ... )
 All the other methods will take the same arguments as they did before (except the callback) and will return a Promise.

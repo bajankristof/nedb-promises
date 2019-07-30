@@ -119,11 +119,11 @@ that failed. (Check out the third example!)
     * _instance_
         * [.load()](#Datastore+load) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.find([query], [projection])](#Datastore+find) ⇒ [<code>Cursor</code>](#Cursor)
-        * [.findOne([query], [projection])](#Datastore+findOne) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.findOne([query], [projection])](#Datastore+findOne) ⇒ [<code>Cursor</code>](#Cursor)
         * [.insert(docs)](#Datastore+insert) ⇒ <code>Promise.&lt;(Object\|Array.&lt;Object&gt;)&gt;</code>
         * [.update(query, update, [options])](#Datastore+update) ⇒ <code>Promise.&lt;(number\|Object\|Array.&lt;Object&gt;)&gt;</code>
         * [.remove([query], [options])](#Datastore+remove) ⇒ <code>Promise.&lt;number&gt;</code>
-        * [.count([query])](#Datastore+count) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.count([query])](#Datastore+count) ⇒ [<code>Cursor</code>](#Cursor)
         * [.ensureIndex(options)](#Datastore+ensureIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.removeIndex(field)](#Datastore+removeIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * _static_
@@ -237,7 +237,7 @@ await datastore.find({ ... }).sort({ ... })
 ```
 <a name="Datastore+findOne"></a>
 
-### datastore.findOne([query], [projection]) ⇒ <code>Promise.&lt;Object&gt;</code>
+### datastore.findOne([query], [projection]) ⇒ [<code>Cursor</code>](#Cursor)
 Find a document that matches a query.
 
 It's basically the same as the original:
@@ -258,6 +258,15 @@ https://github.com/louischatriot/nedb#finding-documents
     </tr>  </tbody>
 </table>
 
+**Example**  
+```js
+datastore.findOne({ ... }).then(...)
+```
+**Example**  
+```js
+// in an async function
+await datastore.findOne({ ... }).sort({ ... })
+```
 <a name="Datastore+insert"></a>
 
 ### datastore.insert(docs) ⇒ <code>Promise.&lt;(Object\|Array.&lt;Object&gt;)&gt;</code>
@@ -334,7 +343,7 @@ https://github.com/louischatriot/nedb#removing-documents
 
 <a name="Datastore+count"></a>
 
-### datastore.count([query]) ⇒ <code>Promise.&lt;number&gt;</code>
+### datastore.count([query]) ⇒ [<code>Cursor</code>](#Cursor)
 Count documents that match a query.
 
 It's basically the same as the original:
@@ -353,6 +362,17 @@ https://github.com/louischatriot/nedb#counting-documents
     </tr>  </tbody>
 </table>
 
+**Example**  
+```js
+datastore.count({ ... }).limit(...).then(...)
+```
+**Example**  
+```js
+// in an async function
+await datastore.count({ ... })
+// or
+await datastore.count({ ... }).sort(...).limit(...)
+```
 <a name="Datastore+ensureIndex"></a>
 
 ### datastore.ensureIndex(options) ⇒ <code>Promise.&lt;undefined&gt;</code>
