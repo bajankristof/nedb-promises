@@ -6,4 +6,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 4.0.0
 ### Changed
-- The `findOne` and `count` `Datastore` methods now return a cursor instead of a plain `Promise` allowing users to e.g.: find the most recently updated document, etc.
+- The [findOne](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore+findOne) and [count](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore+count) `Datastore` methods now return a `Cursor` object instead of a `Promise`, allowing users to e.g.: find the most recently updated document, etc.
