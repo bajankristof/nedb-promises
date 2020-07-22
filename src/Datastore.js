@@ -29,12 +29,12 @@ const
  * datastore.on('update', (datastore, result, query, update, options) => {
  * })
  * datastore.on('load', (datastore) => {
- *     // this event doesn't have a result
+ *	 // this event doesn't have a result
  * })
  * datastore.on('ensureIndex', (datastore, options) => {
- *     // this event doesn't have a result
- *     // but it has the options argument which will be passed to the
- *     // event handlers
+ *	 // this event doesn't have a result
+ *	 // but it has the options argument which will be passed to the
+ *	 // event handlers
  * })
  *
  * @example
@@ -49,8 +49,8 @@ const
  * @example
  * let datastore = Datastore.create()
  * datastore.on('__error__', (datastore, event, error, ...args) => {
- *     // for example
- *     // datastore, 'find', error, [{ foo: 'bar' }, {}]
+ *	 // for example
+ *	 // datastore, 'find', error, [{ foo: 'bar' }, {}]
  * })
  * 
  * @class
@@ -387,15 +387,15 @@ class Datastore extends EventEmitter {
 	static create(pathOrOptions) {
 		return new Proxy(new this(pathOrOptions), {
 			get(target, key) {
-                return target[key]
-                    ? target[key]
-                    : target.__original[key]
+				return target[key]
+					? target[key]
+					: target.__original[key]
 			},
 
 			set(target, key, value) {
-                return target.__original.hasOwnProperty(key)
-                    ? (target.__original[key] = value)
-                    : (target[key] = value)
+				return target.__original.hasOwnProperty(key)
+					? (target.__original[key] = value)
+					: (target[key] = value)
 			}
 		})
 	}
