@@ -72,10 +72,10 @@ class Datastore extends EventEmitter {
 	 * It's basically the same as the original:
 	 * https://github.com/louischatriot/nedb#creatingloading-a-database
 	 * 
-	 * @param  {Object} [options]
+	 * @param  {string|Object} [pathOrOptions]
 	 * @return {static}
 	 */
-	constructor(options) {
+	constructor(pathOrOptions) {
 		super()
 
 		Object.defineProperties(this, {
@@ -89,7 +89,7 @@ class Datastore extends EventEmitter {
 				configurable: true,
 				enumerable: false,
 				writable: false,
-				value: new OriginalDatastore(options)
+				value: new OriginalDatastore(pathOrOptions)
 			}
 		})
 	}
@@ -381,11 +381,11 @@ class Datastore extends EventEmitter {
 	 * For more information visit:
 	 * https://github.com/louischatriot/nedb#creatingloading-a-database
 	 * 
-	 * @param  {string|Object} options
+	 * @param  {string|Object} pathOrOptions
 	 * @return {Proxy.<static>}
 	 */
-	static create(options) {
-		return new Proxy(new this(options), {
+	static create(pathOrOptions) {
+		return new Proxy(new this(pathOrOptions), {
 			get(target, key) {
                 return target[key]
                     ? target[key]
