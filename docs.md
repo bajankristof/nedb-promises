@@ -36,16 +36,16 @@ thus you can await it in async functions.
 ```js
 // in an async function
 await datastore.find(...)
-	.sort(...)
-	.limit(...)
+  .sort(...)
+  .limit(...)
 ```
 **Example**  
 ```js
 // the previous is the same as:
 await datastore.find(...)
-	.sort(...)
-	.limit(...)
-	.exec()
+  .sort(...)
+  .limit(...)
+  .exec()
 ```
 <a name="Cursor+then"></a>
 

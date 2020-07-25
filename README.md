@@ -31,8 +31,8 @@ datastore.insert({ doc: 'yourdoc' })
   
 // or in an async function
 async function findSorted(page, perPage = 10) {
-	return await datastore.find(...)
-    	.sort(...)
+  return await datastore.find(...)
+      .sort(...)
         .limit(perPage)
         .skip(page * perPage)
 }

@@ -1,7 +1,7 @@
 const
-	Cursor = require('./Cursor'),
-	EventEmitter = require('events'),
-	OriginalDatastore = require('nedb')
+    Cursor = require('./Cursor'),
+    EventEmitter = require('events'),
+    OriginalDatastore = require('nedb')
 
 /**
  * @summary
@@ -56,349 +56,349 @@ const
  * @class
  */
 class Datastore extends EventEmitter {
-	/**
-	 * Datastore constructor...
-	 *
-	 * You should use `Datastore.create(...)` instead
-	 * of `new Datastore(...)`. With that you can access
-	 * the original datastore's properties such as `datastore.persistence`.
-	 *
-	 * Create a Datastore instance.
-	 * 
-	 * Note that the datastore will be created
-	 * relative to `process.cwd()`
-	 * (unless an absolute path was passed).
-	 * 
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#creatingloading-a-database
-	 * 
-	 * @param  {Object} [options]
-	 * @return {static}
-	 */
-	constructor(options) {
-		super()
+    /**
+     * Datastore constructor...
+     *
+     * You should use `Datastore.create(...)` instead
+     * of `new Datastore(...)`. With that you can access
+     * the original datastore's properties such as `datastore.persistence`.
+     *
+     * Create a Datastore instance.
+     * 
+     * Note that the datastore will be created
+     * relative to `process.cwd()`
+     * (unless an absolute path was passed).
+     * 
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#creatingloading-a-database
+     * 
+     * @param  {string|Object} [pathOrOptions]
+     * @return {static}
+     */
+    constructor(pathOrOptions) {
+        super()
 
-		Object.defineProperties(this, {
-			__loaded: {
-				enumerable: false,
-				writable: true,
-				value: null
-			},
+        Object.defineProperties(this, {
+            __loaded: {
+                enumerable: false,
+                writable: true,
+                value: null
+            },
 
-			__original: {
-				configurable: true,
-				enumerable: false,
-				writable: false,
-				value: new OriginalDatastore(options)
-			}
-		})
-	}
+            __original: {
+                configurable: true,
+                enumerable: false,
+                writable: false,
+                value: new OriginalDatastore(pathOrOptions)
+            }
+        })
+    }
 
-	/**
-	 * Load the datastore.
-	 * @return {Promise.<undefined>}
-	 */
-	load() {
-		if ( ! (this.__loaded instanceof Promise)) {
-			this.__loaded = new Promise((resolve, reject) => {
-				this.__original.loadDatabase((error) => {
-					if (error) {
-						this.emit('loadError', this, error)
-						this.emit('__error__', this, 'load', error)
-						reject(error)
-					} else {
-						this.emit('load', this)
-						resolve()
-					}
-				})
-			})
-		}
+    /**
+     * Load the datastore.
+     * @return {Promise.<undefined>}
+     */
+    load() {
+        if ( ! (this.__loaded instanceof Promise)) {
+            this.__loaded = new Promise((resolve, reject) => {
+                this.__original.loadDatabase((error) => {
+                    if (error) {
+                        this.emit('loadError', this, error)
+                        this.emit('__error__', this, 'load', error)
+                        reject(error)
+                    } else {
+                        this.emit('load', this)
+                        resolve()
+                    }
+                })
+            })
+        }
 
-		return this.__loaded
-	}
+        return this.__loaded
+    }
 
-	/**
-	 * Find documents that match a query.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#finding-documents
-	 *
-	 * There are differences minor in how the cursor works though.
-	 *
-	 * @example
-	 * datastore.find({ ... }).sort({ ... }).exec().then(...)
-	 *
-	 * @example
-	 * datastore.find({ ... }).sort({ ... }).then(...)
-	 *
-	 * @example
-	 * // in an async function
-	 * await datastore.find({ ... }).sort({ ... })
-	 * 
-	 * @param  {Object} [query]
-	 * @param  {Object} [projection]
-	 * @return {Cursor}
-	 */
-	find(query = {}, projection) {
-		if (typeof projection === 'function') {
-			projection = {}
-		}
+    /**
+     * Find documents that match a query.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#finding-documents
+     *
+     * There are differences minor in how the cursor works though.
+     *
+     * @example
+     * datastore.find({ ... }).sort({ ... }).exec().then(...)
+     *
+     * @example
+     * datastore.find({ ... }).sort({ ... }).then(...)
+     *
+     * @example
+     * // in an async function
+     * await datastore.find({ ... }).sort({ ... })
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [projection]
+     * @return {Cursor}
+     */
+    find(query = {}, projection) {
+        if (typeof projection === 'function') {
+            projection = {}
+        }
 
-		return new Cursor(
-			this.__original.find(query, projection),
-			this.load(),
-			(error, result) => {
-				if (error) {
-					this.emit('findError', this, error, query, projection)
-					this.emit('__error__', this, 'find', error, query, projection)
-				} else {
-					this.emit('find', this, result, query, projection)
-				}
-			}
-		)
-	}
+        return new Cursor(
+            this.__original.find(query, projection),
+            this.load(),
+            (error, result) => {
+                if (error) {
+                    this.emit('findError', this, error, query, projection)
+                    this.emit('__error__', this, 'find', error, query, projection)
+                } else {
+                    this.emit('find', this, result, query, projection)
+                }
+            }
+        )
+    }
 
-	/**
-	 * Find a document that matches a query.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#finding-documents
-	 *
-	 * @example
-	 * datastore.findOne({ ... }).then(...)
-	 *
-	 * @example
-	 * // in an async function
-	 * await datastore.findOne({ ... }).sort({ ... })
-	 * 
-	 * @param  {Object} [query]
-	 * @param  {Object} [projection]
-	 * @return {Cursor}
-	 */
-	findOne(query = {}, projection) {
-		if (typeof projection === 'function') {
-			projection = {}
-		}
+    /**
+     * Find a document that matches a query.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#finding-documents
+     *
+     * @example
+     * datastore.findOne({ ... }).then(...)
+     *
+     * @example
+     * // in an async function
+     * await datastore.findOne({ ... }).sort({ ... })
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [projection]
+     * @return {Cursor}
+     */
+    findOne(query = {}, projection) {
+        if (typeof projection === 'function') {
+            projection = {}
+        }
 
-		return new Cursor(
-			this.__original.findOne(query, projection),
-			this.load(),
-			(error, result) => {
-				if (error) {
-					this.emit('findOneError', this, error, query, projection)
-					this.emit('__error__', this, 'findOne', error, query, projection)
-				} else {
-					this.emit('findOne', this, result, query, projection)
-				}
-			}
-		)
-	}
+        return new Cursor(
+            this.__original.findOne(query, projection),
+            this.load(),
+            (error, result) => {
+                if (error) {
+                    this.emit('findOneError', this, error, query, projection)
+                    this.emit('__error__', this, 'findOne', error, query, projection)
+                } else {
+                    this.emit('findOne', this, result, query, projection)
+                }
+            }
+        )
+    }
 
-	/**
-	 * Insert a document or documents.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#inserting-documents
-	 * 
-	 * @param  {Object|Object[]} docs
-	 * @return {Promise.<Object|Object[]>}
-	 */
-	insert(docs) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.insert(docs, (error, result) => {
-					if (error) {
-						this.emit('insertError', this, error, docs)
-						this.emit('__error__', this, 'insert', error, docs)
-						reject(error)
-					} else {
-						this.emit('insert', this, result, docs)
-						resolve(result)
-					}
-				})
-			})
-		})
-	}
+    /**
+     * Insert a document or documents.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#inserting-documents
+     * 
+     * @param  {Object|Object[]} docs
+     * @return {Promise.<Object|Object[]>}
+     */
+    insert(docs) {
+        return this.load().then(() => {
+            return new Promise((resolve, reject) => {
+                this.__original.insert(docs, (error, result) => {
+                    if (error) {
+                        this.emit('insertError', this, error, docs)
+                        this.emit('__error__', this, 'insert', error, docs)
+                        reject(error)
+                    } else {
+                        this.emit('insert', this, result, docs)
+                        resolve(result)
+                    }
+                })
+            })
+        })
+    }
 
-	/**
-	 * Update documents that match a query.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#updating-documents
-	 *
-	 * If you set `options.returnUpdatedDocs`,
-	 * the returned promise will resolve with
-	 * an object (if `options.multi` is `false`) or
-	 * with an array of objects.
-	 * 
-	 * @param  {Object} query
-	 * @param  {Object} update
-	 * @param  {Object} [options]
-	 * @return {Promise.<number|Object|Object[]>}
-	 */
-	update(query, update, options = {}) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.update(
-					query,
-					update,
-					options,
-					(error, numAffected, affectedDocuments, upsert) => {
-						if (error) {
-							this.emit('updateError', this, error, query, update, options)
-							this.emit('__error__', this, 'update', error, query, update, options)
-							reject(error)
-						} else {
-							let result = options.returnUpdatedDocs
-								? affectedDocuments
-								: numAffected
-							this.emit('update', this, result, query, update, options)
-							resolve(result)
-						}
-					}
-				)
-			})
-		})
-	}
+    /**
+     * Update documents that match a query.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
+     * 
+     * @param  {Object} query
+     * @param  {Object} update
+     * @param  {Object} [options]
+     * @return {Promise.<number|Object|Object[]>}
+     */
+    update(query, update, options = {}) {
+        return this.load().then(() => {
+            return new Promise((resolve, reject) => {
+                this.__original.update(
+                    query,
+                    update,
+                    options,
+                    (error, numAffected, affectedDocuments, upsert) => {
+                        if (error) {
+                            this.emit('updateError', this, error, query, update, options)
+                            this.emit('__error__', this, 'update', error, query, update, options)
+                            reject(error)
+                        } else {
+                            let result = options.returnUpdatedDocs
+                                ? affectedDocuments
+                                : numAffected
+                            this.emit('update', this, result, query, update, options)
+                            resolve(result)
+                        }
+                    }
+                )
+            })
+        })
+    }
 
-	/**
-	 * Remove documents that match a query.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#removing-documents
-	 * 
-	 * @param  {Object} [query]
-	 * @param  {Object} [options]
-	 * @return {Promise.<number>}
-	 */
-	remove(query = {}, options = {}) {
-		return this.load().then(() => {
-			return new Promise((resolve, reject) => {
-				this.__original.remove(
-					query,
-					options,
-					(error, result) => {
-						if (error) {
-							this.emit('removeError', this, error, query, options)
-							this.emit('__error__', this, 'remove', error, query, options)
-							reject(error)
-						} else {
-							this.emit('remove', this, result, query, options)
-							resolve(result)
-						}
-					}
-				)
-			})
-		})
-	}
+    /**
+     * Remove documents that match a query.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#removing-documents
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [options]
+     * @return {Promise.<number>}
+     */
+    remove(query = {}, options = {}) {
+        return this.load().then(() => {
+            return new Promise((resolve, reject) => {
+                this.__original.remove(
+                    query,
+                    options,
+                    (error, result) => {
+                        if (error) {
+                            this.emit('removeError', this, error, query, options)
+                            this.emit('__error__', this, 'remove', error, query, options)
+                            reject(error)
+                        } else {
+                            this.emit('remove', this, result, query, options)
+                            resolve(result)
+                        }
+                    }
+                )
+            })
+        })
+    }
 
-	/**
-	 * Count documents that match a query.
-	 *
-	 * It's basically the same as the original:
-	 * https://github.com/louischatriot/nedb#counting-documents
-	 *
-	 * @example
-	 * datastore.count({ ... }).limit(...).then(...)
-	 *
-	 * @example
-	 * // in an async function
-	 * await datastore.count({ ... })
-	 * // or
-	 * await datastore.count({ ... }).sort(...).limit(...)
-	 * 
-	 * @param  {Object} [query]
-	 * @return {Cursor}
-	 */
-	count(query = {}) {
-		return new Cursor(
-			this.__original.count(query),
-			this.load(),
-			(error, result) => {
-				if (error) {
-					this.emit('countError', this, error, query)
-					this.emit('__error__', this, 'count', error, query)
-				} else {
-					this.emit('count', this, result, query)
-				}
-			}
-		)
-	}
+    /**
+     * Count documents that match a query.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#counting-documents
+     *
+     * @example
+     * datastore.count({ ... }).limit(...).then(...)
+     *
+     * @example
+     * // in an async function
+     * await datastore.count({ ... })
+     * // or
+     * await datastore.count({ ... }).sort(...).limit(...)
+     * 
+     * @param  {Object} [query]
+     * @return {Cursor}
+     */
+    count(query = {}) {
+        return new Cursor(
+            this.__original.count(query),
+            this.load(),
+            (error, result) => {
+                if (error) {
+                    this.emit('countError', this, error, query)
+                    this.emit('__error__', this, 'count', error, query)
+                } else {
+                    this.emit('count', this, result, query)
+                }
+            }
+        )
+    }
 
-	/**
-	 * https://github.com/louischatriot/nedb#indexing
-	 * 
-	 * @param  {Object} options
-	 * @return {Promise.<undefined>}
-	 */
-	ensureIndex(options) {
-		return new Promise((resolve, reject) => {
-			this.__original.ensureIndex(options, (error) => {
-				if (error) {
-					this.emit('ensureIndexError', this, error, options)
-					this.emit('__error__', this, 'ensureIndex', error, options)
-					reject(error)
-				} else {
-					this.emit('ensureIndex', this, options)
-					resolve()
-				}
-			})
-		})
-	}
+    /**
+     * https://github.com/louischatriot/nedb#indexing
+     * 
+     * @param  {Object} options
+     * @return {Promise.<undefined>}
+     */
+    ensureIndex(options) {
+        return new Promise((resolve, reject) => {
+            this.__original.ensureIndex(options, (error) => {
+                if (error) {
+                    this.emit('ensureIndexError', this, error, options)
+                    this.emit('__error__', this, 'ensureIndex', error, options)
+                    reject(error)
+                } else {
+                    this.emit('ensureIndex', this, options)
+                    resolve()
+                }
+            })
+        })
+    }
 
-	/**
-	 * https://github.com/louischatriot/nedb#indexing
-	 * 
-	 * @param  {string} field
-	 * @return {Promise.<undefined>}
-	 */
-	removeIndex(field) {
-		return new Promise((resolve, reject) => {
-			this.__original.removeIndex(field, (error) => {
-				if (error) {
-					this.emit('removeIndexError', this, error, field)
-					this.emit('__error__', this, 'removeIndex', error, field)
-					reject(error)
-				} else {
-					this.emit('removeIndex', this, field)
-					resolve()
-				}
-			})
-		})
-	}
+    /**
+     * https://github.com/louischatriot/nedb#indexing
+     * 
+     * @param  {string} field
+     * @return {Promise.<undefined>}
+     */
+    removeIndex(field) {
+        return new Promise((resolve, reject) => {
+            this.__original.removeIndex(field, (error) => {
+                if (error) {
+                    this.emit('removeIndexError', this, error, field)
+                    this.emit('__error__', this, 'removeIndex', error, field)
+                    reject(error)
+                } else {
+                    this.emit('removeIndex', this, field)
+                    resolve()
+                }
+            })
+        })
+    }
 
-	/**
-	 * Create a database instance.
-	 *
-	 * Use this over `new Datastore(...)` to access
-	 * original nedb datastore properties, such as
-	 * `datastore.persistence`.
-	 *
-	 * Note that the datastore will be created
-	 * relative to `process.cwd()`
-	 * (unless an absolute path was passed).
-	 *
-	 * For more information visit:
-	 * https://github.com/louischatriot/nedb#creatingloading-a-database
-	 * 
-	 * @param  {string|Object} options
-	 * @return {Proxy.<static>}
-	 */
-	static create(options) {
-		return new Proxy(new this(options), {
-			get(target, key) {
+    /**
+     * Create a database instance.
+     *
+     * Use this over `new Datastore(...)` to access
+     * original nedb datastore properties, such as
+     * `datastore.persistence`.
+     *
+     * Note that the datastore will be created
+     * relative to `process.cwd()`
+     * (unless an absolute path was passed).
+     *
+     * For more information visit:
+     * https://github.com/louischatriot/nedb#creatingloading-a-database
+     * 
+     * @param  {string|Object} [pathOrOptions]
+     * @return {Proxy.<static>}
+     */
+    static create(pathOrOptions) {
+        return new Proxy(new this(pathOrOptions), {
+            get(target, key) {
                 return target[key]
                     ? target[key]
                     : target.__original[key]
-			},
+            },
 
-			set(target, key, value) {
+            set(target, key, value) {
                 return target.__original.hasOwnProperty(key)
                     ? (target.__original[key] = value)
                     : (target[key] = value)
-			}
-		})
-	}
+            }
+        })
+    }
 }
 
 module.exports = Datastore

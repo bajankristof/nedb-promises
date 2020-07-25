@@ -188,7 +188,7 @@ declare class Datastore extends EventEmitter {
    * For more information visit:
    * https://github.com/louischatriot/nedb#creatingloading-a-database
    */
-  static create(options: Nedb.DatastoreOptions): Datastore
+  static create(pathOrOptions?: string | Nedb.DatastoreOptions): Datastore
 }
 
 declare namespace Nedb {
