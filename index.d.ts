@@ -71,7 +71,7 @@ declare class Datastore extends EventEmitter {
    *
    * You should use `Datastore.create(...)` instead
    * of `new Datastore(...)`. With that you can access
-   * the original datastore's properties such as `datastore.persistance`.
+   * the original datastore's properties such as `datastore.persistence`.
    *
    * It's basically the same as the original:
    * https://github.com/louischatriot/nedb#creatingloading-a-database
@@ -183,7 +183,7 @@ declare class Datastore extends EventEmitter {
    *
    * Use this over `new Datastore(...)` to access
    * original nedb datastore properties, such as
-   * `datastore.persistance`.
+   * `datastore.persistence`.
    *
    * For more information visit:
    * https://github.com/louischatriot/nedb#creatingloading-a-database
