@@ -36,16 +36,16 @@ thus you can await it in async functions.
 ```js
 // in an async function
 await datastore.find(...)
-  .sort(...)
-  .limit(...)
+ .sort(...)
+ .limit(...)
 ```
 **Example**  
 ```js
 // the previous is the same as:
 await datastore.find(...)
-  .sort(...)
-  .limit(...)
-  .exec()
+ .sort(...)
+ .limit(...)
+ .exec()
 ```
 <a name="Cursor+then"></a>
 
@@ -115,7 +115,7 @@ passed between the datastore and the error object, that being the name of the me
 that failed. (Check out the third example!)  
 
 * [Datastore](#Datastore)
-    * [new Datastore([options])](#new_Datastore_new)
+    * [new Datastore([pathOrOptions])](#new_Datastore_new)
     * _instance_
         * [.load()](#Datastore+load) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.find([query], [projection])](#Datastore+find) ⇒ [<code>Cursor</code>](#Cursor)
@@ -127,11 +127,11 @@ that failed. (Check out the third example!)
         * [.ensureIndex(options)](#Datastore+ensureIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.removeIndex(field)](#Datastore+removeIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
     * _static_
-        * [.create(options)](#Datastore.create) ⇒ <code>Proxy.&lt;static&gt;</code>
+        * [.create([pathOrOptions])](#Datastore.create) ⇒ <code>Proxy.&lt;static&gt;</code>
 
 <a name="new_Datastore_new"></a>
 
-### new Datastore([options])
+### new Datastore([pathOrOptions])
 Datastore constructor...
 
 You should use `Datastore.create(...)` instead
@@ -155,7 +155,7 @@ https://github.com/louischatriot/nedb#creatingloading-a-database
   </thead>
   <tbody>
 <tr>
-    <td>[options]</td><td><code>Object</code></td>
+    <td>[pathOrOptions]</td><td><code>string</code> | <code>Object</code></td>
     </tr>  </tbody>
 </table>
 
@@ -411,7 +411,7 @@ https://github.com/louischatriot/nedb#indexing
 
 <a name="Datastore.create"></a>
 
-### Datastore.create(options) ⇒ <code>Proxy.&lt;static&gt;</code>
+### Datastore.create([pathOrOptions]) ⇒ <code>Proxy.&lt;static&gt;</code>
 Create a database instance.
 
 Use this over `new Datastore(...)` to access
@@ -434,7 +434,7 @@ https://github.com/louischatriot/nedb#creatingloading-a-database
   </thead>
   <tbody>
 <tr>
-    <td>options</td><td><code>string</code> | <code>Object</code></td>
+    <td>[pathOrOptions]</td><td><code>string</code> | <code>Object</code></td>
     </tr>  </tbody>
 </table>
 
