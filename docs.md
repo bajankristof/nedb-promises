@@ -97,7 +97,9 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 **Kind**: global class  
 **Summary**: As of v2.0.0 the Datastore class extends node's built 
 in EventEmitter class and implements each method as an event
-plus additional error events.
+plus additional error events. It also inherits the `compaction.done`
+event from nedb but for consistency, in this library the event
+was renamed to `compactionDone`.
 
 All event callbacks will be passed the same type of values,
 the first being the datastore, then the operation result (if there is any)
@@ -171,6 +173,9 @@ datastore.on('ensureIndex', (datastore, options) => {
     // this event doesn't have a result
     // but it has the options argument which will be passed to the
     // event handlers
+})
+datastore.on('compactionDone', (datastore) => {
+    // inherited from nedb's compaction.done event
 })
 ```
 **Example**  

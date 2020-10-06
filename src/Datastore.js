@@ -7,7 +7,9 @@ const
  * @summary
  * As of v2.0.0 the Datastore class extends node's built 
  * in EventEmitter class and implements each method as an event
- * plus additional error events.
+ * plus additional error events. It also inherits the `compaction.done`
+ * event from nedb but for consistency, in this library the event
+ * was renamed to `compactionDone`.
  *
  * All event callbacks will be passed the same type of values,
  * the first being the datastore, then the operation result (if there is any)
@@ -35,6 +37,9 @@ const
  *     // this event doesn't have a result
  *     // but it has the options argument which will be passed to the
  *     // event handlers
+ * })
+ * datastore.on('compactionDone', (datastore) => {
+ *     // inherited from nedb's compaction.done event
  * })
  *
  * @example
@@ -91,6 +96,10 @@ class Datastore extends EventEmitter {
                 writable: false,
                 value: new OriginalDatastore(pathOrOptions)
             }
+        })
+
+        this.__original.on('compaction.done', () => {
+            this.emit('compactionDone', this)
         })
     }
 
