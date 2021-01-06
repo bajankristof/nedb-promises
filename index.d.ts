@@ -66,6 +66,9 @@ type Document = {
  * @class
  */
 declare class Datastore extends EventEmitter {
+
+  persistence: Nedb.Persistence
+
   /**
    * Datastore constructor...
    *
