@@ -104,7 +104,7 @@ declare class Datastore extends EventEmitter {
    * // in an async function
    * await datastore.find({ ... }).sort({ ... })
    */
-  find<T>(query: any, projection?: {[p in keyof T | '_id' | 'createdAt' | 'updatedAt']?:number}): Nedb.Cursor<(T & Document)[]>
+  find<T>(query: any, projection?: {[p in keyof T | '_id' | 'createdAt' | 'updatedAt']?:number}): Nedb.Cursor<T & Document>
 
   /**
    * Find a document that matches a query.
@@ -195,7 +195,7 @@ declare class Datastore extends EventEmitter {
 }
 
 declare namespace Nedb {
-  interface Cursor<T> extends Promise<T> {
+  interface Cursor<T> extends Promise<T[]> {
     sort(query: any): Cursor<T>
     skip(n: number): Cursor<T>
     limit(n: number): Cursor<T>
