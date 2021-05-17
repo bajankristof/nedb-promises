@@ -1,5 +1,4 @@
-var crypto = require('crypto')
-  ;
+const crypto = require('crypto')
 
 /**
  * Return a random alphanumerical string of length len
@@ -13,10 +12,9 @@ function uid (len) {
   return crypto.randomBytes(Math.ceil(Math.max(8, len * 2)))
     .toString('base64')
     .replace(/[+\/]/g, '')
-    .slice(0, len);
+    .slice(0, len)
 }
 
-
 // Interface
-module.exports.uid = uid;
+module.exports.uid = uid
 

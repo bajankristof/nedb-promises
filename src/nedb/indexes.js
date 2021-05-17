@@ -1,29 +1,27 @@
-var BinarySearchTree = require('binary-search-tree').AVLTree
-  , model = require('./model')
-  , _ = require('underscore')
-  , util = require('util')
-  ;
+const BinarySearchTree = require('binary-search-tree').AVLTree
+const model = require('./model')
+const _ = require('underscore')
+const util = require('util')
 
 /**
  * Two indexed pointers are equal iif they point to the same place
  */
 function checkValueEquality (a, b) {
-  return a === b;
+  return a === b
 }
 
 /**
  * Type-aware projection
  */
 function projectForUnique (elt) {
-  if (elt === null) { return '$null'; }
-  if (typeof elt === 'string') { return '$string' + elt; }
-  if (typeof elt === 'boolean') { return '$boolean' + elt; }
-  if (typeof elt === 'number') { return '$number' + elt; }
-  if (util.isArray(elt)) { return '$date' + elt.getTime(); }
+  if (elt === null) { return '$null' }
+  if (typeof elt === 'string') { return '$string' + elt }
+  if (typeof elt === 'boolean') { return '$boolean' + elt }
+  if (typeof elt === 'number') { return '$number' + elt }
+  if (util.isArray(elt)) { return '$date' + elt.getTime() }
 
-  return elt;   // Arrays and objects, will check for pointer equality
+  return elt   // Arrays and objects, will check for pointer equality
 }
-
 
 /**
  * Create a new index
@@ -34,15 +32,14 @@ function projectForUnique (elt) {
  * @param {Boolean} options.sparse Optional, allow a sparse index (we can have documents for which fieldName is undefined) (default: false)
  */
 function Index (options) {
-  this.fieldName = options.fieldName;
-  this.unique = options.unique || false;
-  this.sparse = options.sparse || false;
+  this.fieldName = options.fieldName
+  this.unique = options.unique || false
+  this.sparse = options.sparse || false
 
-  this.treeOptions = { unique: this.unique, compareKeys: model.compareThings, checkValueEquality: checkValueEquality };
+  this.treeOptions = { unique: this.unique, compareKeys: model.compareThings, checkValueEquality: checkValueEquality }
 
-  this.reset();   // No data in the beginning
+  this.reset()   // No data in the beginning
 }
-
 
 /**
  * Reset an index
@@ -50,11 +47,10 @@ function Index (options) {
  *                                                 If an error is thrown during insertion, the index is not modified
  */
 Index.prototype.reset = function (newData) {
-  this.tree = new BinarySearchTree(this.treeOptions);
+  this.tree = new BinarySearchTree(this.treeOptions)
 
-  if (newData) { this.insert(newData); }
-};
-
+  if (newData) { this.insert(newData) }
+}
 
 /**
  * Insert a new document in the index
@@ -62,43 +58,48 @@ Index.prototype.reset = function (newData) {
  * O(log(n))
  */
 Index.prototype.insert = function (doc) {
-  var key, self = this
-    , keys, i, failingI, error
-    ;
+  let key
+  const self = this
+  let keys
+  let i
+  let failingI
+  let error
 
-  if (util.isArray(doc)) { this.insertMultipleDocs(doc); return; }
+  if (util.isArray(doc)) {
+    this.insertMultipleDocs(doc)
+    return
+  }
 
-  key = model.getDotValue(doc, this.fieldName);
+  key = model.getDotValue(doc, this.fieldName)
 
   // We don't index documents that don't contain the field if the index is sparse
-  if (key === undefined && this.sparse) { return; }
+  if (key === undefined && this.sparse) { return }
 
   if (!util.isArray(key)) {
-    this.tree.insert(key, doc);
+    this.tree.insert(key, doc)
   } else {
     // If an insert fails due to a unique constraint, roll back all inserts before it
-    keys = _.uniq(key, projectForUnique);
+    keys = _.uniq(key, projectForUnique)
 
     for (i = 0; i < keys.length; i += 1) {
       try {
-        this.tree.insert(keys[i], doc);
+        this.tree.insert(keys[i], doc)
       } catch (e) {
-        error = e;
-        failingI = i;
-        break;
+        error = e
+        failingI = i
+        break
       }
     }
 
     if (error) {
       for (i = 0; i < failingI; i += 1) {
-        this.tree.delete(keys[i], doc);
+        this.tree.delete(keys[i], doc)
       }
 
-      throw error;
+      throw error
     }
   }
-};
-
+}
 
 /**
  * Insert an array of documents in the index
@@ -107,27 +108,28 @@ Index.prototype.insert = function (doc) {
  * @API private
  */
 Index.prototype.insertMultipleDocs = function (docs) {
-  var i, error, failingI;
+  let i
+  let error
+  let failingI
 
   for (i = 0; i < docs.length; i += 1) {
     try {
-      this.insert(docs[i]);
+      this.insert(docs[i])
     } catch (e) {
-      error = e;
-      failingI = i;
-      break;
+      error = e
+      failingI = i
+      break
     }
   }
 
   if (error) {
     for (i = 0; i < failingI; i += 1) {
-      this.remove(docs[i]);
+      this.remove(docs[i])
     }
 
-    throw error;
+    throw error
   }
-};
-
+}
 
 /**
  * Remove a document from the index
@@ -136,23 +138,26 @@ Index.prototype.insertMultipleDocs = function (docs) {
  * O(log(n))
  */
 Index.prototype.remove = function (doc) {
-  var key, self = this;
+  let key
+  const self = this
 
-  if (util.isArray(doc)) { doc.forEach(function (d) { self.remove(d); }); return; }
+  if (util.isArray(doc)) {
+    doc.forEach(function (d) { self.remove(d) })
+    return
+  }
 
-  key = model.getDotValue(doc, this.fieldName);
+  key = model.getDotValue(doc, this.fieldName)
 
-  if (key === undefined && this.sparse) { return; }
+  if (key === undefined && this.sparse) { return }
 
   if (!util.isArray(key)) {
-    this.tree.delete(key, doc);
+    this.tree.delete(key, doc)
   } else {
     _.uniq(key, projectForUnique).forEach(function (_key) {
-      self.tree.delete(_key, doc);
-    });
+      self.tree.delete(_key, doc)
+    })
   }
-};
-
+}
 
 /**
  * Update a document in the index
@@ -160,18 +165,20 @@ Index.prototype.remove = function (doc) {
  * Naive implementation, still in O(log(n))
  */
 Index.prototype.update = function (oldDoc, newDoc) {
-  if (util.isArray(oldDoc)) { this.updateMultipleDocs(oldDoc); return; }
+  if (util.isArray(oldDoc)) {
+    this.updateMultipleDocs(oldDoc)
+    return
+  }
 
-  this.remove(oldDoc);
+  this.remove(oldDoc)
 
   try {
-    this.insert(newDoc);
+    this.insert(newDoc)
   } catch (e) {
-    this.insert(oldDoc);
-    throw e;
+    this.insert(oldDoc)
+    throw e
   }
-};
-
+}
 
 /**
  * Update multiple documents in the index
@@ -182,53 +189,53 @@ Index.prototype.update = function (oldDoc, newDoc) {
  * @API private
  */
 Index.prototype.updateMultipleDocs = function (pairs) {
-  var i, failingI, error;
+  let i
+  let failingI
+  let error
 
   for (i = 0; i < pairs.length; i += 1) {
-    this.remove(pairs[i].oldDoc);
+    this.remove(pairs[i].oldDoc)
   }
 
   for (i = 0; i < pairs.length; i += 1) {
     try {
-      this.insert(pairs[i].newDoc);
+      this.insert(pairs[i].newDoc)
     } catch (e) {
-      error = e;
-      failingI = i;
-      break;
+      error = e
+      failingI = i
+      break
     }
   }
 
   // If an error was raised, roll back changes in the inverse order
   if (error) {
     for (i = 0; i < failingI; i += 1) {
-      this.remove(pairs[i].newDoc);
+      this.remove(pairs[i].newDoc)
     }
 
     for (i = 0; i < pairs.length; i += 1) {
-      this.insert(pairs[i].oldDoc);
+      this.insert(pairs[i].oldDoc)
     }
 
-    throw error;
+    throw error
   }
-};
-
+}
 
 /**
  * Revert an update
  */
 Index.prototype.revertUpdate = function (oldDoc, newDoc) {
-  var revert = [];
+  const revert = []
 
   if (!util.isArray(oldDoc)) {
-    this.update(newDoc, oldDoc);
+    this.update(newDoc, oldDoc)
   } else {
     oldDoc.forEach(function (pair) {
-      revert.push({ oldDoc: pair.newDoc, newDoc: pair.oldDoc });
-    });
-    this.update(revert);
+      revert.push({ oldDoc: pair.newDoc, newDoc: pair.oldDoc })
+    })
+    this.update(revert)
   }
-};
-
+}
 
 /**
  * Get all documents in index whose key match value (if it is a Thing) or one of the elements of value (if it is an array of Things)
@@ -236,27 +243,27 @@ Index.prototype.revertUpdate = function (oldDoc, newDoc) {
  * @return {Array of documents}
  */
 Index.prototype.getMatching = function (value) {
-  var self = this;
+  const self = this
 
   if (!util.isArray(value)) {
-    return self.tree.search(value);
+    return self.tree.search(value)
   } else {
-    var _res = {}, res = [];
+    const _res = {}
+    const res = []
 
     value.forEach(function (v) {
       self.getMatching(v).forEach(function (doc) {
-        _res[doc._id] = doc;
-      });
-    });
+        _res[doc._id] = doc
+      })
+    })
 
     Object.keys(_res).forEach(function (_id) {
-      res.push(_res[_id]);
-    });
+      res.push(_res[_id])
+    })
 
-    return res;
+    return res
   }
-};
-
+}
 
 /**
  * Get all documents in index whose key is between bounds are they are defined by query
@@ -265,30 +272,26 @@ Index.prototype.getMatching = function (value) {
  * @return {Array of documents}
  */
 Index.prototype.getBetweenBounds = function (query) {
-  return this.tree.betweenBounds(query);
-};
-
+  return this.tree.betweenBounds(query)
+}
 
 /**
  * Get all elements in the index
  * @return {Array of documents}
  */
 Index.prototype.getAll = function () {
-  var res = [];
+  const res = []
 
   this.tree.executeOnEveryNode(function (node) {
-    var i;
+    let i
 
     for (i = 0; i < node.data.length; i += 1) {
-      res.push(node.data[i]);
+      res.push(node.data[i])
     }
-  });
+  })
 
-  return res;
-};
-
-
-
+  return res
+}
 
 // Interface
-module.exports = Index;
+module.exports = Index
