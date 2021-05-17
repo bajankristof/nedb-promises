@@ -7,7 +7,6 @@
  * It's essentially fs, mkdirp and crash safe write and read functions
  */
 const fs = require('fs')
-const mkdirp = require('mkdirp')
 const async = require('async')
 const path = require('path')
 const storage = {}
@@ -18,7 +17,7 @@ storage.writeFile = fs.writeFile
 storage.unlink = fs.unlink
 storage.appendFile = fs.appendFile
 storage.readFile = fs.readFile
-storage.mkdirp = mkdirp
+storage.mkdir = fs.mkdir
 
 /**
  * Explicit name ...

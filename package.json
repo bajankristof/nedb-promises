@@ -25,7 +25,6 @@
   "dependencies": {
     "async": "0.2.10",
     "localforage": "^1.9.0",
-    "mkdirp": "^1.0.4",
     "underscore": "^1.13.1"
   },
   "devDependencies": {
