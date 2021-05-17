@@ -1,5 +1,5 @@
 const
-    OriginalCursor = require('nedb/lib/cursor')
+    OriginalCursor = require('./nedb/cursor')
 
 /**
  * @class
@@ -77,7 +77,7 @@ class Cursor {
      *  .sort(...)
      *  .limit(...)
      *  .exec()
-     * 
+     *
      * @return {Promise.<Object[]>}
      */
     exec() {
@@ -98,10 +98,10 @@ class Cursor {
 
     /**
      * Execute the cursor and set promise callbacks.
-     * 
+     *
      * For more information visit:
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
-     * 
+     *
      * @param  {Function} fulfilled
      * @param  {Function} [rejected]
      * @return {Promise}
@@ -115,7 +115,7 @@ class Cursor {
      *
      * For more information visit:
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
-     * 
+     *
      * @param  {Function} rejected
      * @return {Promise}
      */

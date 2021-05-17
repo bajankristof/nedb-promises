@@ -1,11 +1,11 @@
 const
     Cursor = require('./Cursor'),
     EventEmitter = require('events'),
-    OriginalDatastore = require('nedb')
+    OriginalDatastore = require('./nedb/datastore')
 
 /**
  * @summary
- * As of v2.0.0 the Datastore class extends node's built 
+ * As of v2.0.0 the Datastore class extends node's built
  * in EventEmitter class and implements each method as an event
  * plus additional error events. It also inherits the `compaction.done`
  * event from nedb but for consistency, in this library the event
@@ -17,12 +17,12 @@ const
  *
  * All events have a matching error event that goes by the name of `${method}Error`,
  * for example `findError` or `loadError`. The callbacks of these events will receive
- * the same parameters as the normal event handlers except that instead of the 
+ * the same parameters as the normal event handlers except that instead of the
  * operation result there will be an operation error. (Check out the second example!)
  *
  * A generic `__error__` event is also available. This event will be emitted at any of
  * the above error events. The callbacks of this event will receive the same parameters
- * as the specific error event handlers except that there will be one more parameter 
+ * as the specific error event handlers except that there will be one more parameter
  * passed between the datastore and the error object, that being the name of the method
  * that failed. (Check out the third example!)
  *
@@ -57,7 +57,7 @@ const
  *     // for example
  *     // datastore, 'find', error, [{ foo: 'bar' }, {}]
  * })
- * 
+ *
  * @class
  */
 class Datastore extends EventEmitter {
@@ -69,14 +69,14 @@ class Datastore extends EventEmitter {
      * the original datastore's properties such as `datastore.persistence`.
      *
      * Create a Datastore instance.
-     * 
+     *
      * Note that the datastore will be created
      * relative to `process.cwd()`
      * (unless an absolute path was passed).
-     * 
+     *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#creatingloading-a-database
-     * 
+     *
      * @param  {string|Object} [pathOrOptions]
      * @return {static}
      */
@@ -143,7 +143,7 @@ class Datastore extends EventEmitter {
      * @example
      * // in an async function
      * await datastore.find({ ... }).sort({ ... })
-     * 
+     *
      * @param  {Object} [query]
      * @param  {Object} [projection]
      * @return {Cursor}
@@ -179,7 +179,7 @@ class Datastore extends EventEmitter {
      * @example
      * // in an async function
      * await datastore.findOne({ ... }).sort({ ... })
-     * 
+     *
      * @param  {Object} [query]
      * @param  {Object} [projection]
      * @return {Cursor}
@@ -208,7 +208,7 @@ class Datastore extends EventEmitter {
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#inserting-documents
-     * 
+     *
      * @param  {Object|Object[]} docs
      * @return {Promise.<Object|Object[]>}
      */
@@ -239,7 +239,7 @@ class Datastore extends EventEmitter {
      * the returned promise will resolve with
      * an object (if `options.multi` is `false`) or
      * with an array of objects.
-     * 
+     *
      * @param  {Object} query
      * @param  {Object} update
      * @param  {Object} [options]
@@ -275,7 +275,7 @@ class Datastore extends EventEmitter {
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#removing-documents
-     * 
+     *
      * @param  {Object} [query]
      * @param  {Object} [options]
      * @return {Promise.<number>}
@@ -315,7 +315,7 @@ class Datastore extends EventEmitter {
      * await datastore.count({ ... })
      * // or
      * await datastore.count({ ... }).sort(...).limit(...)
-     * 
+     *
      * @param  {Object} [query]
      * @return {Cursor}
      */
@@ -336,7 +336,7 @@ class Datastore extends EventEmitter {
 
     /**
      * https://github.com/louischatriot/nedb#indexing
-     * 
+     *
      * @param  {Object} options
      * @return {Promise.<undefined>}
      */
@@ -357,7 +357,7 @@ class Datastore extends EventEmitter {
 
     /**
      * https://github.com/louischatriot/nedb#indexing
-     * 
+     *
      * @param  {string} field
      * @return {Promise.<undefined>}
      */
@@ -389,7 +389,7 @@ class Datastore extends EventEmitter {
      *
      * For more information visit:
      * https://github.com/louischatriot/nedb#creatingloading-a-database
-     * 
+     *
      * @param  {string|Object} [pathOrOptions]
      * @return {Proxy.<static>}
      */

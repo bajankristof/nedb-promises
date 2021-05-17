@@ -2,7 +2,7 @@ const
     { expect } = require('chai'),
     Cursor = require('../src/Cursor'),
     Datastore = require('../src/Datastore'),
-    Persistence = require('nedb/lib/persistence')
+    Persistence = require('../src/nedb/persistence')
 
 describe('testing datastore proxy', () => {
     let datastore = Datastore.create('test.db')
