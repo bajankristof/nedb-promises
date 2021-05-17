@@ -69,7 +69,7 @@ function Persistence (options) {
 Persistence.ensureDirectoryExists = function (dir, cb) {
   const callback = cb || function () {}
 
-  storage.mkdirp(dir, function (err) { return callback(err) })
+  storage.mkdirp(dir).then(() => callback(), err => callback(err))
 }
 
 /**
