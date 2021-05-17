@@ -418,7 +418,7 @@ describe('Binary search tree', function () {
     })
 
     it('Can search for data between two bounds', function () {
-      const bst = new BinarySearchTree()
+      const bst = new BinarySearchTree();
 
       [10, 5, 15, 3, 8, 13, 18].forEach(function (k) {
         bst.insert(k, 'data ' + k)
@@ -429,7 +429,7 @@ describe('Binary search tree', function () {
     })
 
     it('Bounded search can handle cases where query contains both $lt and $lte, or both $gt and $gte', function () {
-      const bst = new BinarySearchTree()
+      const bst = new BinarySearchTree();
 
       [10, 5, 15, 3, 8, 13, 18].forEach(function (k) {
         bst.insert(k, 'data ' + k)
@@ -445,7 +445,7 @@ describe('Binary search tree', function () {
     })
 
     it('Bounded search can work when one or both boundaries are missing', function () {
-      const bst = new BinarySearchTree()
+      const bst = new BinarySearchTree();
 
       [10, 5, 15, 3, 8, 13, 18].forEach(function (k) {
         bst.insert(k, 'data ' + k)
@@ -480,7 +480,7 @@ describe('Binary search tree', function () {
     })
 
     it('Deleting a non-existent key doesnt have any effect', function () {
-      const bst = new BinarySearchTree()
+      const bst = new BinarySearchTree();
 
       [10, 5, 3, 8, 15, 12, 37].forEach(function (k) {
         bst.insert(k, 'some ' + k)

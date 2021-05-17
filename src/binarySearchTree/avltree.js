@@ -427,7 +427,7 @@ AVLTree.prototype.delete = function (key, value) {
 
   // If newTree is undefined, that means its structure was not modified
   if (newTree) { this.tree = newTree }
-}
+};
 
 /**
  * Other functions we want to use on an AVLTree as if it were the internal _AVLTree
