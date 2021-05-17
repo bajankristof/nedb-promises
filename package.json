@@ -1,10 +1,9 @@
 {
   "name": "nedb-promises",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "docs": "jsdoc2md ./src/*.js > docs.md --no-gfm",
     "test": "mocha --reporter spec --timeout 10000"
   },
@@ -25,9 +24,6 @@
   "homepage": "https://github.com/bajankristof/nedb-promises#readme",
   "dependencies": {
     "nedb": "^1.8.0"
-  },
-  "resolutions": {
-    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
