@@ -1,4 +1,4 @@
-const BinarySearchTree = require('binary-search-tree').AVLTree
+const BinarySearchTree = require('../binarySearchTree/avltree')
 const model = require('./model')
 const _ = require('underscore')
 const util = require('util')
