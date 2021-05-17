@@ -13,7 +13,6 @@ function getRandomArray (n) {
 
   return res
 }
-
 module.exports.getRandomArray = getRandomArray
 
 /*
