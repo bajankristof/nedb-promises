@@ -105,8 +105,7 @@ fs.writeFile = function (path, data, options, callback_) {
   })
 
   function writeFd (fd, isUserFd) {
-    const buffer = (data instanceof Buffer) ? data : new Buffer('' + data,
-      options.encoding || 'utf8')
+    const buffer = (data instanceof Buffer) ? data : Buffer.from('' + data, options.encoding || 'utf8')
     const position = /a/.test(flag) ? null : 0
 
     writeAll(fd, isUserFd, buffer, 0, buffer.length, position, callback)
