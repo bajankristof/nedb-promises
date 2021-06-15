@@ -1,7 +1,7 @@
 const
     Cursor = require('./Cursor'),
     EventEmitter = require('events'),
-    OriginalDatastore = require('nedb')
+    OriginalDatastore = require('@seald-io/nedb')
 
 /**
  * @summary
