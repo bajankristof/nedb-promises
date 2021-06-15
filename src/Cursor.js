@@ -1,5 +1,5 @@
 const
-    OriginalCursor = require('nedb/lib/cursor')
+    OriginalCursor = require('@seald-io/nedb/lib/cursor')
 
 /**
  * @class

@@ -1,8 +1,12 @@
+
 ![nedb-promises](https://github.com/bajankristof/nedb-promises/blob/master/logo.svg "nedb-promises")
 
 A dead-simple promise wrapper for [nedb](https://github.com/louischatriot/nedb#readme).
 
 Check out the [docs](https://github.com/bajankristof/nedb-promises/blob/master/docs.md).
+
+##### IMPORTANT
+**As of `nedb-promises` `5.0.0` [nedb](https://github.com/louischatriot/nedb#readme) package has been replaced with a fork of the original package, [@seald-io/nedb](https://github.com/seald/nedb) to solve some vulnerability issues originating from `nedb`!**
 
 ```js
 const Datastore = require('nedb-promises')
