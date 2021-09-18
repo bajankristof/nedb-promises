@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/bajankristof/nedb-promises#readme",
   "dependencies": {
-    "@seald-io/nedb": "^2.0.3"
+    "@seald-io/nedb": "^2.0.4"
   },
   "devDependencies": {
     "chai": "^4.2.0",
