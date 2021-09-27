@@ -1,31 +1,30 @@
-const
-    { expect } = require('chai'),
-    Datastore = require('../src/Datastore')
+const Datastore = require('../src/Datastore');
 
 describe('testing document insertion', () => {
-    let documents = [
+    const documents = [
         { name: 'first document' },
         { name: 'second document' },
-        { name: 'third document' }
-    ]
+        { name: 'third document' },
+    ];
 
     describe('single', () => {
         it('should insert single document', () => {
-            let datastore = Datastore.create()
+            const datastore = Datastore.create();
             return datastore.insert(documents[0])
                 .then((inserted) => {
-                    expect(inserted).to.be.an('object').that.have.all.keys('_id', 'name')
-                })
-        })
-    })
+                    expect(inserted).toMatchObject({ name: 'first document' });
+                    expect(inserted).toHaveProperty('_id');
+                });
+        });
+    });
 
     describe('bulk', () => {
-        it('should insert multiple documents', () => {
-            let datastore = Datastore.create()
+        it('should insert multiple documents', () => {
+            const datastore = Datastore.create();
             return datastore.insert(documents)
                 .then((inserted) => {
-                    expect(inserted).to.be.an('array').that.have.lengthOf(3)
-                })
-        })
-    })
-})
+                    expect(inserted.length).toBe(3);
+                });
+        });
+    });
+});

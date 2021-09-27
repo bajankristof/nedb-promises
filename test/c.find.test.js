@@ -1,58 +1,60 @@
-const
-    { expect } = require('chai'),
-    Datastore = require('../src/Datastore')
+const Datastore = require('../src/Datastore');
 
 describe('testing document finding', () => {
-    let documents = [
+    const documents = [
         { name: 'first document' },
         { name: 'second document' },
-        { name: 'third document' }
-    ]
+        { name: 'third document' },
+    ];
 
     describe('single', () => {
-        let datastore = Datastore.create(),
-            insert = datastore.insert(documents)
+        const datastore = Datastore.create();
+        const insert = datastore.insert(documents);
+
         it('should find the first inserted doc', () => {
             return insert
-                .then((inserted) => {
-                    return datastore.findOne()
+                .then(() => {
+                    return datastore.findOne();
                 }).then((result) => {
-                    expect(result).to.be.an('object').that.has.all.keys('_id', 'name')
-                })
-        })
+                    expect(result).toHaveProperty('_id');
+                    expect(result).toHaveProperty('name');
+                    expect(result.name).toMatch(/^(first|second|third) document$/);
+                });
+        });
 
         it('should find the last inserted doc when sorting backwards', () => {
             return insert
-                .then((inserted) => {
-                    return datastore.findOne().sort({ name: -1 })
+                .then(() => {
+                    return datastore.findOne().sort({ name: -1 });
                 }).then((result) => {
-                    expect(result).to.be.an('object').that.has.all.keys('_id', 'name')
-                    expect(result.name).to.equal('third document')
-                })
-        })
-    })
+                    expect(result).toHaveProperty('_id');
+                    expect(result).toHaveProperty('name');
+                    expect(result.name).toBe('third document');
+                });
+        });
+    });
 
     describe('bulk', () => {
-        let datastore = Datastore.create()
+        const datastore = Datastore.create();
         it('should find all inserted docs', () => {
             return datastore.insert(documents)
                 .then(() => {
-                    return datastore.find().exec()
+                    return datastore.find().exec();
                 }).then((result) => {
-                    expect(result).to.be.an('array').that.has.lengthOf(3)
-                })
-        })
-    })
+                    expect(result.length).toBe(3);
+                });
+        });
+    });
 
     describe('find().then()', () => {
-        let datastore = Datastore.create()
+        let datastore = Datastore.create();
         it('should find all inserted docs', () => {
             return datastore.insert(documents)
                 .then(() => {
                     return datastore.find().then((result) => {
-                        expect(result).to.be.an('array').that.has.lengthOf(3)
-                    })
-                })
-        })
-    })
-})
+                        expect(result.length).toBe(3);
+                    });
+                });
+        });
+    });
+});

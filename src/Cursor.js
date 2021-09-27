@@ -1,5 +1,4 @@
-const
-    OriginalCursor = require('@seald-io/nedb/lib/cursor')
+const OriginalCursor = require('@seald-io/nedb/lib/cursor');
 
 /**
  * @class
@@ -7,11 +6,11 @@ const
 class Cursor {
     constructor(original, prerequisite, callback) {
         if ( ! (original instanceof OriginalCursor)) {
-            throw new TypeError(`Unexpected ${typeof original}, expected: Cursor (nedb/lib/cursor)`)
+            throw new TypeError(`Unexpected ${typeof original}, expected: Cursor (nedb/lib/cursor)`);
         }
 
         if ( ! (prerequisite instanceof Promise)) {
-            prerequisite = Promise.resolve()
+            prerequisite = Promise.resolve();
         }
 
         Object.defineProperties(this, {
@@ -19,38 +18,38 @@ class Cursor {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: original
+                value: original,
             },
 
             __prerequisite: {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: prerequisite
+                value: prerequisite,
             },
 
             __callback: {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: callback
-            }
-        })
+                value: callback,
+            },
+        });
     }
 
     sort() {
-        this.__original.sort.apply(this.__original, arguments)
-        return this
+        this.__original.sort.apply(this.__original, arguments);
+        return this;
     }
 
     skip() {
-        this.__original.skip.apply(this.__original, arguments)
-        return this
+        this.__original.skip.apply(this.__original, arguments);
+        return this;
     }
 
     limit() {
-        this.__original.limit.apply(this.__original, arguments)
-        return this
+        this.__original.limit.apply(this.__original, arguments);
+        return this;
     }
 
     /**
@@ -85,15 +84,15 @@ class Cursor {
             return new Promise((resolve, reject) => {
                 this.__original.exec((error, result) => {
                     if ('function' === typeof this.__callback) {
-                        this.__callback(error, result)
+                        this.__callback(error, result);
                     }
 
                     return error
                         ? reject(error)
-                        : resolve(result)
-                })
-            })
-        })
+                        : resolve(result);
+                });
+            });
+        });
     }
 
     /**
@@ -107,7 +106,7 @@ class Cursor {
      * @return {Promise}
      */
     then(fulfilled, rejected) {
-        return this.exec().then(fulfilled, rejected)
+        return this.exec().then(fulfilled, rejected);
     }
 
     /**
@@ -120,8 +119,8 @@ class Cursor {
      * @return {Promise}
      */
     catch(rejected) {
-        return this.exec().catch(rejected)
+        return this.exec().catch(rejected);
     }
 }
 
-module.exports = Cursor
+module.exports = Cursor;

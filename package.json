@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "docs": "jsdoc2md ./src/*.js > docs.md --no-gfm",
-    "test": "mocha --reporter spec --timeout 10000"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,9 +26,9 @@
     "@seald-io/nedb": "^2.0.4"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "jsdoc-to-markdown": "^5.0.3",
-    "minimist": "^1.2.5",
-    "mocha": "^6.2.3"
+    "eslint": "^7.32.0",
+    "eslint-plugin-jest": "^24.4.2",
+    "jest": "^27.2.2",
+    "jsdoc-to-markdown": "^7.0.1"
   }
 }
