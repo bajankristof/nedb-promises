@@ -1,1 +1,1 @@
-module.exports = require('./src/Datastore')
+module.exports = require('./src/Datastore');
