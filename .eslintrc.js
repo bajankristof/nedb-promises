@@ -1,36 +1,23 @@
 module.exports = {
-    'env': {
-        'browser': true,
-        'node': true,
-        'commonjs': true,
-        'es2021': true,
-        'jest/globals': true
+    env: {
+        commonjs: true,
+        es2021: true,
+        node: true,
+        jest: true,
     },
-    'plugins': ['jest'],
-    'extends': 'eslint:recommended',
-    'parserOptions': {
-        'ecmaVersion': 12
+    extends: 'eslint:recommended',
+    parserOptions: {
+        ecmaVersion: 13,
     },
-    'rules': {
-        "comma-dangle": [
-            "error",
-            "always-multiline"
-        ],
-        'indent': [
-            'error',
-            4
-        ],
-        'linebreak-style': [
-            'error',
-            'unix'
-        ],
-        'quotes': [
-            'error',
-            'single'
-        ],
-        'semi': [
-            'error',
-            'always'
-        ]
-    }
+    rules: {
+        'indent': [ 'error', 4 ],
+        'linebreak-style': [ 'error', 'unix' ],
+        'quotes': [ 'error', 'single' ],
+        'semi': [ 'error', 'always' ],
+        'comma-dangle': [ 'error', 'always-multiline' ],
+        'quote-props': [ 'error', 'consistent-as-needed' ],
+        'no-multiple-empty-lines': [ 'error' ],
+        'space-before-function-paren': [ 'error', { anonymous: 'never', named: 'never', asyncArrow: 'always' } ],
+        'default-case-last': [ 'error' ],
+    },
 };
