@@ -1,60 +1,43 @@
 const Datastore = require('../src/Datastore');
 
 describe('testing document finding', () => {
-    const documents = [
-        { name: 'first document' },
-        { name: 'second document' },
-        { name: 'third document' },
+    const docs = [
+        { name: '1st document' },
+        { name: '2nd document' },
+        { name: '3rd document' },
     ];
 
-    describe('single', () => {
-        const datastore = Datastore.create();
-        const insert = datastore.insert(documents);
+    const datastore = Datastore.create();
+    beforeEach(async () => await datastore.insert(docs));
+    afterEach(async () => await datastore.remove({}, { multi: true }));
 
-        it('should find the first inserted doc', () => {
-            return insert
-                .then(() => {
-                    return datastore.findOne();
-                }).then((result) => {
-                    expect(result).toHaveProperty('_id');
-                    expect(result).toHaveProperty('name');
-                    expect(result.name).toMatch(/^(first|second|third) document$/);
-                });
+    describe('single', () => {
+        it('should find the first inserted doc', async () => {
+            const foundDoc = await datastore.findOne();
+            expect(foundDoc).toHaveProperty('_id');
+            expect(foundDoc).toHaveProperty('name');
+            expect(foundDoc.name).toMatch(/^(1st|2nd|3rd) document$/);
         });
 
-        it('should find the last inserted doc when sorting backwards', () => {
-            return insert
-                .then(() => {
-                    return datastore.findOne().sort({ name: -1 });
-                }).then((result) => {
-                    expect(result).toHaveProperty('_id');
-                    expect(result).toHaveProperty('name');
-                    expect(result.name).toBe('third document');
-                });
+        it('should find the last inserted doc when sorting backwards', async () => {
+            const foundDoc = await datastore.findOne().sort({ name: -1 });
+            expect(foundDoc).toHaveProperty('_id');
+            expect(foundDoc).toHaveProperty('name');
+            expect(foundDoc.name).toBe('3rd document');
         });
     });
 
     describe('bulk', () => {
-        const datastore = Datastore.create();
-        it('should find all inserted docs', () => {
-            return datastore.insert(documents)
-                .then(() => {
-                    return datastore.find().exec();
-                }).then((result) => {
-                    expect(result.length).toBe(3);
-                });
+        it('should find all inserted docs', async () => {
+            const foundDocs = await datastore.find().sort({ name: 1 }).exec();
+            expect(foundDocs).toMatchObject(docs);
         });
     });
 
     describe('find().then()', () => {
-        let datastore = Datastore.create();
-        it('should find all inserted docs', () => {
-            return datastore.insert(documents)
-                .then(() => {
-                    return datastore.find().then((result) => {
-                        expect(result.length).toBe(3);
-                    });
-                });
+        it('should find all inserted docs', async () => {
+            const foundDocs = await datastore.find().sort({ name: 1 });
+            expect(foundDocs).toMatchObject(docs);
         });
     });
 });

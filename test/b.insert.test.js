@@ -1,30 +1,27 @@
 const Datastore = require('../src/Datastore');
 
 describe('testing document insertion', () => {
-    const documents = [
-        { name: 'first document' },
-        { name: 'second document' },
-        { name: 'third document' },
+    const docs = [
+        { name: '1st document' },
+        { name: '2nd document' },
+        { name: '3rd document' },
     ];
 
     describe('single', () => {
-        it('should insert single document', () => {
+        it('should insert single document', async () => {
             const datastore = Datastore.create();
-            return datastore.insert(documents[0])
-                .then((inserted) => {
-                    expect(inserted).toMatchObject({ name: 'first document' });
-                    expect(inserted).toHaveProperty('_id');
-                });
+            const insertedDoc = await datastore.insert(docs[0]);
+            expect(insertedDoc).toMatchObject({ name: '1st document' });
+            expect(insertedDoc).toHaveProperty('_id');
         });
     });
 
     describe('bulk', () => {
-        it('should insert multiple documents', () => {
+        it('should insert multiple documents', async () => {
             const datastore = Datastore.create();
-            return datastore.insert(documents)
-                .then((inserted) => {
-                    expect(inserted.length).toBe(3);
-                });
+            const insertedDocs = await datastore.insert(docs);
+            expect(insertedDocs.length).toBe(3);
+            expect(insertedDocs).toMatchObject(docs);
         });
     });
 });

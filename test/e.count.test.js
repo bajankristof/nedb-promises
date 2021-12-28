@@ -1,32 +1,25 @@
 const Datastore = require('../src/Datastore');
 
 describe('testing document counting', () => {
-    const documents = [
-        { name: 'first document' },
-        { name: 'second document' },
-        { name: 'third document' },
+    const docs = [
+        { name: '1st document' },
+        { name: '2nd document' },
+        { name: '3rd document' },
     ];
 
-    describe('count', () => {
-        const datastore = Datastore.create();
-        const insert = datastore.insert(documents);
+    const datastore = Datastore.create();
+    beforeEach(async () => await datastore.insert(docs));
+    afterEach(async () => await datastore.remove({}, { multi: true }));
 
-        it('should get the count of the docs', () => {
-            return insert
-                .then(() => {
-                    return datastore.count();
-                }).then((result) => {
-                    expect(result).toBe(3);
-                });
+    describe('count', () => {
+        it('should get the count of the docs', async () => {
+            const count = await datastore.count();
+            expect(count).toBe(3);
         });
 
-        it('should get the count of the docs when limiting', () => {
-            return insert
-                .then(() => {
-                    return datastore.count().limit(2);
-                }).then((result) => {
-                    expect(result).toBe(2);
-                });
+        it('should get the count of the docs when limiting', async () => {
+            const count = await datastore.count().limit(2);
+            expect(count).toBe(2);
         });
     });
 });
