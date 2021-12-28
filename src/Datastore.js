@@ -104,6 +104,13 @@ class Datastore extends EventEmitter {
 
     /**
      * Load the datastore.
+     *
+     * Note that you don't necessarily have to call
+     * this method to load the datastore as it will
+     * automatically be called and awaited on any
+     * operation issued against the datastore
+     * (i.e.: `find`, `findOne`, etc.).
+     * 
      * @return {Promise.<undefined>}
      */
     load() {
@@ -382,8 +389,13 @@ class Datastore extends EventEmitter {
      * original nedb datastore properties, such as
      * `datastore.persistence`.
      *
-     * Note that the datastore will be created
-     * relative to `process.cwd()`
+     * Note that this method only creates the `Datastore`
+     * class instance, not the datastore file itself.
+     * The file will only be created once an operation
+     * is issued against the datastore or if you call
+     * the `load` instance method explicitly.
+     * 
+     * The path (if specified) will be relative to `process.cwd()`
      * (unless an absolute path was passed).
      *
      * For more information visit:

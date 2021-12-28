@@ -13,10 +13,37 @@
 **Kind**: global class  
 
 * [Cursor](#Cursor)
+    * [.sort()](#Cursor+sort) ⇒ [<code>Cursor</code>](#Cursor)
+    * [.skip()](#Cursor+skip) ⇒ [<code>Cursor</code>](#Cursor)
+    * [.limit()](#Cursor+limit) ⇒ [<code>Cursor</code>](#Cursor)
     * [.exec()](#Cursor+exec) ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
     * [.then(fulfilled, [rejected])](#Cursor+then) ⇒ <code>Promise</code>
     * [.catch(rejected)](#Cursor+catch) ⇒ <code>Promise</code>
 
+<a name="Cursor+sort"></a>
+
+### cursor.sort() ⇒ [<code>Cursor</code>](#Cursor)
+Sort the queried documents.
+
+See: https://github.com/louischatriot/nedb#sorting-and-paginating
+
+**Kind**: instance method of [<code>Cursor</code>](#Cursor)  
+<a name="Cursor+skip"></a>
+
+### cursor.skip() ⇒ [<code>Cursor</code>](#Cursor)
+Skip some of the queried documents.
+
+See: https://github.com/louischatriot/nedb#sorting-and-paginating
+
+**Kind**: instance method of [<code>Cursor</code>](#Cursor)  
+<a name="Cursor+limit"></a>
+
+### cursor.limit() ⇒ [<code>Cursor</code>](#Cursor)
+Limit the queried documents.
+
+See: https://github.com/louischatriot/nedb#sorting-and-paginating
+
+**Kind**: instance method of [<code>Cursor</code>](#Cursor)  
 <a name="Cursor+exec"></a>
 
 ### cursor.exec() ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
@@ -200,6 +227,12 @@ datastore.on('__error__', (datastore, event, error, ...args) => {
 
 ### datastore.load() ⇒ <code>Promise.&lt;undefined&gt;</code>
 Load the datastore.
+
+Note that you don't necessarily have to call
+this method to load the datastore as it will
+automatically be called and awaited on any
+operation issued against the datastore
+(i.e.: `find`, `findOne`, etc.).
 
 **Kind**: instance method of [<code>Datastore</code>](#Datastore)  
 <a name="Datastore+find"></a>
@@ -423,8 +456,13 @@ Use this over `new Datastore(...)` to access
 original nedb datastore properties, such as
 `datastore.persistence`.
 
-Note that the datastore will be created
-relative to `process.cwd()`
+Note that this method only creates the `Datastore`
+class instance, not the datastore file itself.
+The file will only be created once an operation
+is issued against the datastore or if you call
+the `load` instance method explicitly.
+
+The path (if specified) will be relative to `process.cwd()`
 (unless an absolute path was passed).
 
 For more information visit:

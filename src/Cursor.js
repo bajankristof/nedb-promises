@@ -37,16 +37,37 @@ class Cursor {
         });
     }
 
+    /**
+     * Sort the queried documents.
+     *
+     * See: https://github.com/louischatriot/nedb#sorting-and-paginating
+     * 
+     * @return {Cursor}
+     */
     sort() {
         this.__original.sort.apply(this.__original, arguments);
         return this;
     }
 
+    /**
+     * Skip some of the queried documents.
+     *
+     * See: https://github.com/louischatriot/nedb#sorting-and-paginating
+     * 
+     * @return {Cursor}
+     */
     skip() {
         this.__original.skip.apply(this.__original, arguments);
         return this;
     }
 
+    /**
+     * Limit the queried documents.
+     *
+     * See: https://github.com/louischatriot/nedb#sorting-and-paginating
+     * 
+     * @return {Cursor}
+     */
     limit() {
         this.__original.limit.apply(this.__original, arguments);
         return this;
