@@ -1,8 +1,5 @@
 const fs = require('fs');
-const path = require('path');
 const Datastore = require('../src/Datastore');
-
-const root = path.dirname(__dirname);
 
 describe('testing datastore creation', () => {
     describe('new Datastore(\'foo.db\')', () => {
