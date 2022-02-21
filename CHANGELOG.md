@@ -4,12 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 4.1.4
+## 5.0.1 - 5.0.3
 ### Fixed
-- `underscore` security vulnerability
+- Vulnerable dependencies.
+
+### Updated
+- Code style.
+- Some documentation issues.
+
+## 5.0.0
+### Updated
+- Switched from `nedb` to `@seald-io/nedb`, to solve vulnerability issues.
+
+## 4.1.4 - 4.1.6
+### Fixed
+- Vulnerable dependencies.
 
 ## 4.1.1 - 4.1.3
-- typescript definition file updates
+### Updated
+- TypeScript definition file.
 
 ## 4.1.0
 ### Added
@@ -17,14 +30,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 4.0.4
 ### Updated
-- vulnerable dependencies
-- tabs to spaces in code
-- typescript doc file
+- Vulnerable dependencies.
+- Tabs to spaces in code.
+- TypeScript definition file.
 
 ## 4.0.1
-### Changed
-- Updated dependencies
+### Updated
+- Vulnerable dependencies.
 
 ## 4.0.0
-### Changed
+### Updated
 - The [findOne](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore+findOne) and [count](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore+count) `Datastore` methods now return a `Cursor` object instead of a `Promise`, allowing users to e.g.: find the most recently updated document, etc.
