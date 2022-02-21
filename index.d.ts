@@ -457,6 +457,19 @@ declare namespace NeDB {
       options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi?: false },
     ): Promise<TDocument & TSchema>;
     /**
+     * Update documents that match a query.
+     * Insert a new document corresponding to the `update` rules
+     * if no matching document was found.
+     *
+     * It's basically the same as the original:
+     * https://github.com/louischatriot/nedb#updating-documents
+     */
+    update<TSchema>(
+      query: Query,
+      update: Update,
+      options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi: true },
+    ): Promise<(TDocument & TSchema)[] | (TDocument & TSchema)>;
+    /**
      * Update a document that matches a query.
      *
      * It's basically the same as the original:
