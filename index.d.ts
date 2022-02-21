@@ -285,6 +285,63 @@ declare namespace NeDB {
     expireAfterSeconds?: number;
   }
 
+  /**
+   * @summary
+   * As of v2.0.0 the Datastore class extends node's built 
+   * in EventEmitter class and implements each method as an event
+   * plus additional error events. It also inherits the `compaction.done`
+   * event from nedb but for consistency, in this library the event
+   * was renamed to `compactionDone`.
+   *
+   * All event callbacks will be passed the same type of values,
+   * the first being the datastore, then the operation result (if there is any)
+   * and then the arguments of the called method. (Check out the first example!)
+   *
+   * All events have a matching error event that goes by the name of `${method}Error`,
+   * for example `findError` or `loadError`. The callbacks of these events will receive
+   * the same parameters as the normal event handlers except that instead of the 
+   * operation result there will be an operation error. (Check out the second example!)
+   *
+   * A generic `__error__` event is also available. This event will be emitted at any of
+   * the above error events. The callbacks of this event will receive the same parameters
+   * as the specific error event handlers except that there will be one more parameter 
+   * passed between the datastore and the error object, that being the name of the method
+   * that failed. (Check out the third example!)
+   *
+   * @example
+   * let datastore = Datastore.create()
+   * datastore.on('update', (datastore, result, query, update, options) => {
+   * })
+   * datastore.on('load', (datastore) => {
+   *     // this event doesn't have a result
+   * })
+   * datastore.on('ensureIndex', (datastore, options) => {
+   *     // this event doesn't have a result
+   *     // but it has the options argument which will be passed to the
+   *     // event handlers
+   * })
+   * datastore.on('compactionDone', (datastore) => {
+   *     // inherited from nedb's compaction.done event
+   * })
+   *
+   * @example
+   * let datastore = Datastore.create()
+   * datastore.on('updateError', (datastore, error, query, update, options) => {
+   * })
+   * datastore.on('loadError', (datastore, error) => {
+   * })
+   * datastore.on('ensureIndexError', (datastore, error, options) => {
+   * })
+   *
+   * @example
+   * let datastore = Datastore.create()
+   * datastore.on('__error__', (datastore, event, error, ...args) => {
+   *     // for example
+   *     // datastore, 'find', error, [{ foo: 'bar' }, {}]
+   * })
+   * 
+   * @class
+   */
   class Datastore<TDocument> extends EventEmitter {
     persistence: Persistence;
 
