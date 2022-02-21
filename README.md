@@ -1,4 +1,3 @@
-
 ![nedb-promises](https://github.com/bajankristof/nedb-promises/blob/master/logo.svg "nedb-promises")
 
 A dead-simple promise wrapper for [nedb](https://github.com/louischatriot/nedb#readme).
@@ -48,9 +47,10 @@ npm install --save nedb-promises
 ```
 
 ### Usage
-Everything works as the original module, with four major exceptions. 
+Everything works as the original module, with a couple of exceptions:
 * There are no callbacks.
-* `loadDatabase` has been renamed to `load`.
+* `loadDatabase` has been renamed to [`load`](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore+load).
+* The cursor's `projection` method has been renamed to [`project`](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Cursor+project).
 * You should call `Datastore.create(...)` instead of `new Datastore(...)`. This way you can access the original [nedb](https://github.com/louischatriot/nedb#readme) properties, such as `datastore.persistence`.
 * As of v2.0.0 the module supports events 😎... Check out the [docs about events](https://github.com/bajankristof/nedb-promises/blob/master/docs.md#Datastore)!
 

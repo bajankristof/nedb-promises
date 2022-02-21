@@ -16,6 +16,7 @@
     * [.sort()](#Cursor+sort) ⇒ [<code>Cursor</code>](#Cursor)
     * [.skip()](#Cursor+skip) ⇒ [<code>Cursor</code>](#Cursor)
     * [.limit()](#Cursor+limit) ⇒ [<code>Cursor</code>](#Cursor)
+    * [.project()](#Cursor+project) ⇒ [<code>Cursor</code>](#Cursor)
     * [.exec()](#Cursor+exec) ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
     * [.then(fulfilled, [rejected])](#Cursor+then) ⇒ <code>Promise</code>
     * [.catch(rejected)](#Cursor+catch) ⇒ <code>Promise</code>
@@ -44,15 +45,18 @@ Limit the queried documents.
 See: https://github.com/louischatriot/nedb#sorting-and-paginating
 
 **Kind**: instance method of [<code>Cursor</code>](#Cursor)  
+<a name="Cursor+project"></a>
+
+### cursor.project() ⇒ [<code>Cursor</code>](#Cursor)
+Set the document projection.
+
+See: https://github.com/louischatriot/nedb#projections
+
+**Kind**: instance method of [<code>Cursor</code>](#Cursor)  
 <a name="Cursor+exec"></a>
 
 ### cursor.exec() ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
 Execute the cursor.
-
-You can use the same cursor methods
-that you could with the original module:
-
-https://github.com/louischatriot/nedb#sorting-and-paginating
 
 Since the Cursor has a `then` and a `catch` method
 JavaScript identifies it as a thenable object

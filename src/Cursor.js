@@ -44,8 +44,8 @@ class Cursor {
      * 
      * @return {Cursor}
      */
-    sort() {
-        this.__original.sort.apply(this.__original, arguments);
+    sort(...args) {
+        this.__original.sort(...args);
         return this;
     }
 
@@ -56,8 +56,8 @@ class Cursor {
      * 
      * @return {Cursor}
      */
-    skip() {
-        this.__original.skip.apply(this.__original, arguments);
+    skip(...args) {
+        this.__original.skip(...args);
         return this;
     }
 
@@ -68,18 +68,25 @@ class Cursor {
      * 
      * @return {Cursor}
      */
-    limit() {
-        this.__original.limit.apply(this.__original, arguments);
+    limit(...args) {
+        this.__original.limit(...args);
+        return this;
+    }
+
+    /**
+     * Set the document projection.
+     * 
+     * See: https://github.com/louischatriot/nedb#projections
+     * 
+     * @return {Cursor}
+     */
+    project(...args) {
+        this.__original.projection(...args);
         return this;
     }
 
     /**
      * Execute the cursor.
-     *
-     * You can use the same cursor methods
-     * that you could with the original module:
-     *
-     * https://github.com/louischatriot/nedb#sorting-and-paginating
      *
      * Since the Cursor has a `then` and a `catch` method
      * JavaScript identifies it as a thenable object
