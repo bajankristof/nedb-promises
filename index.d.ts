@@ -541,4 +541,4 @@ declare namespace NeDB {
   }
 }
 
-export default NeDB.Datastore;
+export = NeDB.Datastore;
