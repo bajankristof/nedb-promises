@@ -1,6 +1,6 @@
 {
   "name": "nedb-promises",
-  "version": "6.0.3",
+  "version": "6.0.4",
   "description": "A dead-simple promise wrapper for nedb.",
   "main": "index.js",
   "scripts": {
@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/bajankristof/nedb-promises#readme",
   "dependencies": {
-    "@seald-io/nedb": "^2.2.0"
+    "@seald-io/nedb": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.6.0",
-    "jest": "^27.4.7",
-    "jsdoc-to-markdown": "^7.1.0"
+    "eslint": "^8.13.0",
+    "jest": "^27.5.1",
+    "jsdoc-to-markdown": "^7.1.1"
   }
 }
