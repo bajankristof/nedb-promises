@@ -109,16 +109,16 @@ class Cursor {
      */
     exec() {
         return this.__prerequisite.then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.exec((error, result) => {
-                    if ('function' === typeof this.__callback) {
-                        this.__callback(error, result);
-                    }
-
-                    return error
-                        ? reject(error)
-                        : resolve(result);
-                });
+            return this.__original.execAsync().then((result)=>{
+                if ('function' === typeof this.__callback) {
+                    this.__callback(null, result);
+                }
+                return result;
+            }).catch((error)=>{
+                if ('function' === typeof this.__callback) {
+                    this.__callback(error);
+                }
+                throw error;
             });
         });
     }

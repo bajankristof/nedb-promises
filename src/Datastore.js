@@ -82,6 +82,13 @@ class Datastore extends EventEmitter {
     constructor(pathOrOptions) {
         super();
 
+        let options;
+        if(typeof pathOrOptions === 'string'){
+            options = {filename:pathOrOptions};
+        }else{
+            options = pathOrOptions;
+        }
+
         Object.defineProperties(this, {
             __loaded: {
                 enumerable: false,
@@ -93,7 +100,7 @@ class Datastore extends EventEmitter {
                 configurable: true,
                 enumerable: false,
                 writable: false,
-                value: new OriginalDatastore(pathOrOptions),
+                value: new OriginalDatastore(options),
             },
         });
 
@@ -115,17 +122,12 @@ class Datastore extends EventEmitter {
      */
     load() {
         if ( ! (this.__loaded instanceof Promise)) {
-            this.__loaded = new Promise((resolve, reject) => {
-                this.__original.loadDatabase(error => {
-                    if (error) {
-                        this.emit('loadError', this, error);
-                        this.emit('__error__', this, 'load', error);
-                        reject(error);
-                    } else {
-                        this.emit('load', this);
-                        resolve();
-                    }
-                });
+            this.__loaded = this.__original.loadDatabaseAsync().then(()=>{
+                this.emit('load', this);
+            }).catch((error)=>{
+                this.emit('loadError', this, error);
+                this.emit('__error__', this, 'load', error);
+                throw error;
             });
         }
 
@@ -160,7 +162,7 @@ class Datastore extends EventEmitter {
         }
 
         return new Cursor(
-            this.__original.find(query, projection),
+            this.__original.findAsync(query, projection),
             this.load(),
             (error, result) => {
                 if (error) {
@@ -196,7 +198,7 @@ class Datastore extends EventEmitter {
         }
 
         return new Cursor(
-            this.__original.findOne(query, projection),
+            this.__original.findOneAsync(query, projection),
             this.load(),
             (error, result) => {
                 if (error) {
@@ -220,17 +222,13 @@ class Datastore extends EventEmitter {
      */
     insert(docs) {
         return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.insert(docs, (error, result) => {
-                    if (error) {
-                        this.emit('insertError', this, error, docs);
-                        this.emit('__error__', this, 'insert', error, docs);
-                        reject(error);
-                    } else {
-                        this.emit('insert', this, result, docs);
-                        resolve(result);
-                    }
-                });
+            return this.__original.insertAsync(docs).then((result)=>{
+                this.emit('insert', this, result, docs);
+                return result;
+            }).catch((error)=>{
+                this.emit('insertError', this, error, docs);
+                this.emit('__error__', this, 'insert', error, docs);
+                throw error;
             });
         });
     }
@@ -253,25 +251,18 @@ class Datastore extends EventEmitter {
      */
     update(query, update, options = {}) {
         return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.update(
-                    query,
-                    update,
-                    options,
-                    (error, numAffected, affectedDocuments) => {
-                        if (error) {
-                            this.emit('updateError', this, error, query, update, options);
-                            this.emit('__error__', this, 'update', error, query, update, options);
-                            reject(error);
-                        } else {
-                            let result = options.returnUpdatedDocs
-                                ? affectedDocuments
-                                : numAffected;
-                            this.emit('update', this, result, query, update, options);
-                            resolve(result);
-                        }
-                    },
-                );
+            return this.__original.updateAsync(query,
+                update,
+                options).then(({numAffected, affectedDocuments})=>{
+                let result = options.returnUpdatedDocs
+                    ? affectedDocuments
+                    : numAffected;
+                this.emit('update', this, result, query, update, options);
+                return result;
+            }).catch((error)=>{
+                this.emit('updateError', this, error, query, update, options);
+                this.emit('__error__', this, 'update', error, query, update, options);
+                throw error; 
             });
         });
     }
@@ -288,21 +279,14 @@ class Datastore extends EventEmitter {
      */
     remove(query = {}, options = {}) {
         return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.remove(
-                    query,
-                    options,
-                    (error, result) => {
-                        if (error) {
-                            this.emit('removeError', this, error, query, options);
-                            this.emit('__error__', this, 'remove', error, query, options);
-                            reject(error);
-                        } else {
-                            this.emit('remove', this, result, query, options);
-                            resolve(result);
-                        }
-                    },
-                );
+            return this.__original.removeAsync(query,
+                options).then((result)=>{
+                this.emit('remove', this, result, query, options);
+                return result;
+            }).catch((error)=>{
+                this.emit('removeError', this, error, query, options);
+                this.emit('__error__', this, 'remove', error, query, options);
+                throw error;
             });
         });
     }
@@ -327,7 +311,7 @@ class Datastore extends EventEmitter {
      */
     count(query = {}) {
         return new Cursor(
-            this.__original.count(query),
+            this.__original.countAsync(query),
             this.load(),
             (error, result) => {
                 if (error) {
@@ -347,17 +331,12 @@ class Datastore extends EventEmitter {
      * @return {Promise.<undefined>}
      */
     ensureIndex(options) {
-        return new Promise((resolve, reject) => {
-            this.__original.ensureIndex(options, (error) => {
-                if (error) {
-                    this.emit('ensureIndexError', this, error, options);
-                    this.emit('__error__', this, 'ensureIndex', error, options);
-                    reject(error);
-                } else {
-                    this.emit('ensureIndex', this, options);
-                    resolve();
-                }
-            });
+        return this.__original.ensureIndexAsync(options).then(()=>{
+            this.emit('ensureIndex', this, options);
+        }).catch(error=>{
+            this.emit('ensureIndexError', this, error, options);
+            this.emit('__error__', this, 'ensureIndex', error, options);
+            throw error;
         });
     }
 
@@ -368,17 +347,12 @@ class Datastore extends EventEmitter {
      * @return {Promise.<undefined>}
      */
     removeIndex(field) {
-        return new Promise((resolve, reject) => {
-            this.__original.removeIndex(field, (error) => {
-                if (error) {
-                    this.emit('removeIndexError', this, error, field);
-                    this.emit('__error__', this, 'removeIndex', error, field);
-                    reject(error);
-                } else {
-                    this.emit('removeIndex', this, field);
-                    resolve();
-                }
-            });
+        return this.__original.removeIndexAsync(field).then(()=>{
+            this.emit('removeIndex', this, field);
+        }).catch((error)=>{
+            this.emit('removeIndexError', this, error, field);
+            this.emit('__error__', this, 'removeIndex', error, field);
+            throw(error);
         });
     }
 
