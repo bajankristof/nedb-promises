@@ -123,7 +123,7 @@ class Datastore extends EventEmitter {
         const datastore = new OriginalDatastore(
             typeof pathOrOptions === 'string'
                 ? { filename: pathOrOptions }
-                : pathOrOptions
+                : pathOrOptions,
         );
 
         Object.defineProperties(this, {
@@ -159,18 +159,16 @@ class Datastore extends EventEmitter {
      */
     load() {
         if ( ! (this.__loaded instanceof Promise)) {
-            this.__loaded = new Promise((resolve, reject) => {
-                this.__original.loadDatabase(error => {
-                    if (error) {
-                        this.emit('loadError', this, error);
-                        this.emit('__error__', this, 'load', error);
-                        reject(error);
-                    } else {
-                        this.emit('load', this);
-                        resolve();
-                    }
+            this.__loaded = this.__original.loadDatabaseAsync()
+                .then(() => {
+                    this.emit('load', this);
+                    return this;
+                })
+                .catch((error) => {
+                    this.emit('loadError', this, error);
+                    this.emit('__error__', this, 'load', error);
+                    throw error;
                 });
-            });
         }
 
         return this.__loaded;
