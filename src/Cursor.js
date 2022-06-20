@@ -4,13 +4,10 @@ const OriginalCursor = require('@seald-io/nedb/lib/cursor');
  * @class
  */
 class Cursor {
-    constructor(original, prerequisite, callback) {
-        if ( ! (original instanceof OriginalCursor)) {
+    constructor(datastore, op, ...args) {
+        const cursor = datastore.__original[op](...args);
+        if (!(cursor instanceof OriginalCursor)) {
             throw new TypeError(`Unexpected ${typeof original}, expected: Cursor (nedb/lib/cursor)`);
-        }
-
-        if ( ! (prerequisite instanceof Promise)) {
-            prerequisite = Promise.resolve();
         }
 
         Object.defineProperties(this, {
@@ -18,21 +15,28 @@ class Cursor {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: original,
+                value: cursor,
             },
 
-            __prerequisite: {
+            __datastore: {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: prerequisite,
+                value: datastore,
             },
 
-            __callback: {
+            __op: {
                 configurable: false,
                 enumerable: false,
                 writable: false,
-                value: callback,
+                value: op,
+            },
+
+            __args: {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: args,
             },
         });
     }
@@ -107,20 +111,16 @@ class Cursor {
      * 
      * @return {Promise.<Object[]>}
      */
-    exec() {
-        return this.__prerequisite.then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.exec((error, result) => {
-                    if ('function' === typeof this.__callback) {
-                        this.__callback(error, result);
-                    }
-
-                    return error
-                        ? reject(error)
-                        : resolve(result);
-                });
-            });
-        });
+    async exec() {
+        await this.__datastore.load();
+        try {
+            const result = await this.__original.execAsync();
+            this.__datastore.broadcastSuccess(this.__op, result, ...this.__args);
+            return result;
+        } catch (error) {
+            this.__datastore.broadcastError(this.__op, result, ...this.__args);
+            throw error;
+        }
     }
 
     /**
