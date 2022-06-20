@@ -61,6 +61,44 @@ const Cursor = require('./Cursor');
  */
 class Datastore extends EventEmitter {
     /**
+     * Create a database instance.
+     *
+     * Use this over `new Datastore(...)` to access
+     * original nedb datastore properties, such as
+     * `datastore.persistence`.
+     *
+     * Note that this method only creates the `Datastore`
+     * class instance, not the datastore file itself.
+     * The file will only be created once an operation
+     * is issued against the datastore or if you call
+     * the `load` instance method explicitly.
+     * 
+     * The path (if specified) will be relative to `process.cwd()`
+     * (unless an absolute path was passed).
+     *
+     * For more information visit:
+     * https://github.com/louischatriot/nedb#creatingloading-a-database
+     * 
+     * @param  {string|Object} [pathOrOptions]
+     * @return {Proxy.<static>}
+     */
+    static create(pathOrOptions) {
+        return new Proxy(new this(pathOrOptions), {
+            get(target, key) {
+                return target[key]
+                    ? target[key]
+                    : target.__original[key];
+            },
+
+            set(target, key, value) {
+                return Object.prototype.hasOwnProperty.call(target.__original, key)
+                    ? (target.__original[key] = value)
+                    : (target[key] = value);
+            },
+        });
+    }
+
+    /**
      * Datastore constructor...
      *
      * You should use `Datastore.create(...)` instead
@@ -385,44 +423,6 @@ class Datastore extends EventEmitter {
                     resolve();
                 }
             });
-        });
-    }
-
-    /**
-     * Create a database instance.
-     *
-     * Use this over `new Datastore(...)` to access
-     * original nedb datastore properties, such as
-     * `datastore.persistence`.
-     *
-     * Note that this method only creates the `Datastore`
-     * class instance, not the datastore file itself.
-     * The file will only be created once an operation
-     * is issued against the datastore or if you call
-     * the `load` instance method explicitly.
-     * 
-     * The path (if specified) will be relative to `process.cwd()`
-     * (unless an absolute path was passed).
-     *
-     * For more information visit:
-     * https://github.com/louischatriot/nedb#creatingloading-a-database
-     * 
-     * @param  {string|Object} [pathOrOptions]
-     * @return {Proxy.<static>}
-     */
-    static create(pathOrOptions) {
-        return new Proxy(new this(pathOrOptions), {
-            get(target, key) {
-                return target[key]
-                    ? target[key]
-                    : target.__original[key];
-            },
-
-            set(target, key, value) {
-                return Object.prototype.hasOwnProperty.call(target.__original, key)
-                    ? (target.__original[key] = value)
-                    : (target[key] = value);
-            },
         });
     }
 }
