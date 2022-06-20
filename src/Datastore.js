@@ -82,6 +82,12 @@ class Datastore extends EventEmitter {
     constructor(pathOrOptions) {
         super();
 
+        const datastore = new OriginalDatastore(
+            typeof pathOrOptions === 'string'
+                ? { filename: pathOrOptions }
+                : pathOrOptions
+        );
+
         Object.defineProperties(this, {
             __loaded: {
                 enumerable: false,
@@ -93,7 +99,7 @@ class Datastore extends EventEmitter {
                 configurable: true,
                 enumerable: false,
                 writable: false,
-                value: new OriginalDatastore(pathOrOptions),
+                value: datastore,
             },
         });
 
