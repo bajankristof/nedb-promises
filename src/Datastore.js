@@ -160,15 +160,8 @@ class Datastore extends EventEmitter {
     load() {
         if ( ! (this.__loaded instanceof Promise)) {
             this.__loaded = this.__original.loadDatabaseAsync()
-                .then(() => {
-                    this.emit('load', this);
-                    return this;
-                })
-                .catch((error) => {
-                    this.emit('loadError', this, error);
-                    this.emit('__error__', this, 'load', error);
-                    throw error;
-                });
+                .then(() => this.broadcastSuccess('load'))
+                .catch((error) => { this.broadcastError('load', error); throw error; });
         }
 
         return this.__loaded;
@@ -201,18 +194,7 @@ class Datastore extends EventEmitter {
             projection = {};
         }
 
-        return new Cursor(
-            this.__original.find(query, projection),
-            this.load(),
-            (error, result) => {
-                if (error) {
-                    this.emit('findError', this, error, query, projection);
-                    this.emit('__error__', this, 'find', error, query, projection);
-                } else {
-                    this.emit('find', this, result, query, projection);
-                }
-            },
-        );
+        return new Cursor(this, 'find', query, projection);
     }
 
     /**
@@ -237,18 +219,7 @@ class Datastore extends EventEmitter {
             projection = {};
         }
 
-        return new Cursor(
-            this.__original.findOne(query, projection),
-            this.load(),
-            (error, result) => {
-                if (error) {
-                    this.emit('findOneError', this, error, query, projection);
-                    this.emit('__error__', this, 'findOne', error, query, projection);
-                } else {
-                    this.emit('findOne', this, result, query, projection);
-                }
-            },
-        );
+        return new Cursor(this, 'findOne', query, projection);
     }
 
     /**
@@ -260,21 +231,16 @@ class Datastore extends EventEmitter {
      * @param  {Object|Object[]} docs
      * @return {Promise.<Object|Object[]>}
      */
-    insert(docs) {
-        return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.insert(docs, (error, result) => {
-                    if (error) {
-                        this.emit('insertError', this, error, docs);
-                        this.emit('__error__', this, 'insert', error, docs);
-                        reject(error);
-                    } else {
-                        this.emit('insert', this, result, docs);
-                        resolve(result);
-                    }
-                });
-            });
-        });
+    async insert(docs) {
+        await this.load();
+        try {
+            const result = await this.__original.insertAsync(docs);
+            this.broadcastSuccess('insert', docs);
+            return result;
+        } catch (error) {
+            this.broadcastError('insert', error, docs);
+            throw error;
+        }
     }
 
     /**
@@ -293,29 +259,17 @@ class Datastore extends EventEmitter {
      * @param  {Object} [options]
      * @return {Promise.<number|Object|Object[]>}
      */
-    update(query, update, options = {}) {
-        return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.update(
-                    query,
-                    update,
-                    options,
-                    (error, numAffected, affectedDocuments) => {
-                        if (error) {
-                            this.emit('updateError', this, error, query, update, options);
-                            this.emit('__error__', this, 'update', error, query, update, options);
-                            reject(error);
-                        } else {
-                            let result = options.returnUpdatedDocs
-                                ? affectedDocuments
-                                : numAffected;
-                            this.emit('update', this, result, query, update, options);
-                            resolve(result);
-                        }
-                    },
-                );
-            });
-        });
+    async update(query, update, options = {}) {
+        await this.load();
+        try {
+            const { numAffected, affectedDocuments } = await this.__original.updateAsync(query, update, options);
+            const result = options.returnUpdatedDocs ? affectedDocuments : numAffected;
+            this.broadcastSuccess('update', result, query, update, options);
+            return result;
+        } catch (error) {
+            this.broadcastError('update', error, query, update, options);
+            throw error;
+        }
     }
 
     /**
@@ -328,25 +282,16 @@ class Datastore extends EventEmitter {
      * @param  {Object} [options]
      * @return {Promise.<number>}
      */
-    remove(query = {}, options = {}) {
-        return this.load().then(() => {
-            return new Promise((resolve, reject) => {
-                this.__original.remove(
-                    query,
-                    options,
-                    (error, result) => {
-                        if (error) {
-                            this.emit('removeError', this, error, query, options);
-                            this.emit('__error__', this, 'remove', error, query, options);
-                            reject(error);
-                        } else {
-                            this.emit('remove', this, result, query, options);
-                            resolve(result);
-                        }
-                    },
-                );
-            });
-        });
+    async remove(query = {}, options = {}) {
+        await this.load();
+        try {
+            const result = await this.__original.removeAsync(query, options);
+            this.broadcastSuccess('remove', result, query, options);
+            return result;
+        } catch (error) {
+            this.broadcastError('remove', error, query, options);
+            throw error;
+        }
     }
 
     /**
@@ -368,18 +313,7 @@ class Datastore extends EventEmitter {
      * @return {Cursor}
      */
     count(query = {}) {
-        return new Cursor(
-            this.__original.count(query),
-            this.load(),
-            (error, result) => {
-                if (error) {
-                    this.emit('countError', this, error, query);
-                    this.emit('__error__', this, 'count', error, query);
-                } else {
-                    this.emit('count', this, result, query);
-                }
-            },
-        );
+        return new Cursor(this, 'count', query);
     }
 
     /**
@@ -388,19 +322,15 @@ class Datastore extends EventEmitter {
      * @param  {Object} options
      * @return {Promise.<undefined>}
      */
-    ensureIndex(options) {
-        return new Promise((resolve, reject) => {
-            this.__original.ensureIndex(options, (error) => {
-                if (error) {
-                    this.emit('ensureIndexError', this, error, options);
-                    this.emit('__error__', this, 'ensureIndex', error, options);
-                    reject(error);
-                } else {
-                    this.emit('ensureIndex', this, options);
-                    resolve();
-                }
-            });
-        });
+    async ensureIndex(options) {
+        try {
+            const result = await this.__original.ensureIndexAsync(options);
+            this.broadcastSuccess('ensureIndex', result, options);
+            return result;
+        } catch (error) {
+            this.broadcastError('ensureIndex', error, field);
+            throw error;
+        }
     }
 
     /**
@@ -409,19 +339,46 @@ class Datastore extends EventEmitter {
      * @param  {string} field
      * @return {Promise.<undefined>}
      */
-    removeIndex(field) {
-        return new Promise((resolve, reject) => {
-            this.__original.removeIndex(field, (error) => {
-                if (error) {
-                    this.emit('removeIndexError', this, error, field);
-                    this.emit('__error__', this, 'removeIndex', error, field);
-                    reject(error);
-                } else {
-                    this.emit('removeIndex', this, field);
-                    resolve();
-                }
-            });
-        });
+    async removeIndex(field) {
+        try {
+            const result = await this.__original.removeIndexAsync(field);
+            this.broadcastSuccess('removeIndex', result, field);
+            return result;
+        } catch (error) {
+            this.broadcastError('removeIndex', error, field);
+            throw error;
+        }
+    }
+
+    /**
+     * Broadcasts operation success messages.
+     * 
+     * @param  {string} op
+     * @param  {*}      result
+     * @param  {...*}   args
+     * 
+     * @return {undefined}
+     * @private
+     */
+    broadcastSuccess(op, result, ...args) {
+        this.emit(op, this, result, ...args);
+        return this;
+    }
+
+    /**
+     * Broadcasts operation error messages.
+     * 
+     * @param  {string} op
+     * @param  {Error}  error
+     * @param  {...*}   args
+     * 
+     * @return {undefined}
+     * @private
+     */
+    broadcastError(op, error, ...args) {
+        this.emit(`${op}Error`, this, error, ...args);
+        this.emit('__error__', this, op, error, ...args);
+        return this;
     }
 }
 
