@@ -8,8 +8,8 @@ describe('testing document update', () => {
     ];
 
     const datastore = Datastore.create();
-    beforeEach(async () => await datastore.insert(docs));
-    afterEach(async () => await datastore.remove({}, { multi: true }));
+    beforeEach(() => datastore.insert(docs));
+    afterEach(() => datastore.remove({}, { multi: true }));
 
     describe('single', () => {
         it('should update single document', async () => {

@@ -109,7 +109,7 @@ class Cursor {
      *  .limit(...)
      *  .exec()
      * 
-     * @return {Promise.<Object[]>}
+     * @return {Promise<Object[]>}
      */
     async exec() {
         await this.__datastore.load();
@@ -118,7 +118,7 @@ class Cursor {
             this.__datastore.broadcastSuccess(this.__op, result, ...this.__args);
             return result;
         } catch (error) {
-            this.__datastore.broadcastError(this.__op, result, ...this.__args);
+            this.__datastore.broadcastError(this.__op, error, ...this.__args);
             throw error;
         }
     }

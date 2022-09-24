@@ -3,7 +3,7 @@ const Datastore = require('../src/Datastore');
 const Persistence = require('@seald-io/nedb/lib/persistence');
 
 describe('testing datastore proxy', () => {
-    let datastore = Datastore.create('test.db');
+    const datastore = Datastore.create('test.db');
 
     it('should not affect promise returns', () => {
         expect(datastore.find({}) instanceof Cursor).toBe(true);

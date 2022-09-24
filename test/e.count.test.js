@@ -8,8 +8,8 @@ describe('testing document counting', () => {
     ];
 
     const datastore = Datastore.create();
-    beforeEach(async () => await datastore.insert(docs));
-    afterEach(async () => await datastore.remove({}, { multi: true }));
+    beforeEach(() => datastore.insert(docs));
+    afterEach(() => datastore.remove({}, { multi: true }));
 
     describe('count', () => {
         it('should get the count of the docs', async () => {

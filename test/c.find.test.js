@@ -8,8 +8,8 @@ describe('testing document finding', () => {
     ];
 
     const datastore = Datastore.create();
-    beforeEach(async () => await datastore.insert(docs));
-    afterEach(async () => await datastore.remove({}, { multi: true }));
+    beforeEach(() => datastore.insert(docs));
+    afterEach(() => datastore.remove({}, { multi: true }));
 
     describe('single', () => {
         it('should find the first inserted doc', async () => {

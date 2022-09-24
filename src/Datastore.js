@@ -80,7 +80,7 @@ class Datastore extends EventEmitter {
      * https://github.com/louischatriot/nedb#creatingloading-a-database
      * 
      * @param  {string|Object} [pathOrOptions]
-     * @return {Proxy.<static>}
+     * @return {Proxy<static>}
      */
     static create(pathOrOptions) {
         return new Proxy(new this(pathOrOptions), {
@@ -155,7 +155,7 @@ class Datastore extends EventEmitter {
      * operation issued against the datastore
      * (i.e.: `find`, `findOne`, etc.).
      * 
-     * @return {Promise.<undefined>}
+     * @return {Promise<undefined>}
      */
     load() {
         if ( ! (this.__loaded instanceof Promise)) {
@@ -168,7 +168,7 @@ class Datastore extends EventEmitter {
     }
 
     /**
-     * Find documents that match a query.
+     * Find documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#finding-documents
@@ -198,7 +198,7 @@ class Datastore extends EventEmitter {
     }
 
     /**
-     * Find a document that matches a query.
+     * Find a document that matches the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#finding-documents
@@ -229,7 +229,7 @@ class Datastore extends EventEmitter {
      * https://github.com/louischatriot/nedb#inserting-documents
      * 
      * @param  {Object|Object[]} docs
-     * @return {Promise.<Object|Object[]>}
+     * @return {Promise<Object|Object[]>}
      */
     async insert(docs) {
         await this.load();
@@ -244,7 +244,33 @@ class Datastore extends EventEmitter {
     }
 
     /**
-     * Update documents that match a query.
+     * Insert a single document.
+     *
+     * This is just an alias for `insert` with object destructuring
+     * to ensure a single document.
+     * 
+     * @param  {Object} doc
+     * @return {Promise<Object>}
+     */
+    insertOne({ ...doc }) {
+        return this.insert(doc);
+    }
+
+    /**
+     * Insert multiple documents.
+     *
+     * This is just an alias for `insert` with array destructuring
+     * to ensure multiple documents.
+     * 
+     * @param  {Object[]} docs
+     * @return {Promise<Object[]>}
+     */
+    insertMany([...docs]) {
+        return this.insert(docs);
+    }
+
+    /**
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
@@ -257,7 +283,7 @@ class Datastore extends EventEmitter {
      * @param  {Object} query
      * @param  {Object} update
      * @param  {Object} [options]
-     * @return {Promise.<number|Object|Object[]>}
+     * @return {Promise<number|Object|Object[]>}
      */
     async update(query, update, options = {}) {
         await this.load();
@@ -273,14 +299,44 @@ class Datastore extends EventEmitter {
     }
 
     /**
-     * Remove documents that match a query.
+     * Update a single document that matches the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `false`.
+     * 
+     * @param  {Object} query
+     * @param  {Object} update
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number|Object>}
+     */
+    updateOne(query, update, options = {}) {
+        return this.update(query, update, { ...options, multi: false });
+    }
+
+    /**
+     * Update multiple documents that match the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `true`.
+     *
+     * @param  {Object} query
+     * @param  {Object} update
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number|Object[]>}
+     */
+    updateMany(query, update, options = {}) {
+        return this.update(query, update, { ...options, multi: true });
+    }
+
+    /**
+     * Remove documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#removing-documents
      * 
      * @param  {Object} [query]
      * @param  {Object} [options]
-     * @return {Promise.<number>}
+     * @return {Promise<number>}
      */
     async remove(query = {}, options = {}) {
         await this.load();
@@ -292,6 +348,62 @@ class Datastore extends EventEmitter {
             this.broadcastError('remove', error, query, options);
             throw error;
         }
+    }
+
+    /**
+     * Remove the first document that matches the specified `query`.
+     *
+     * This is just an alias for `remove` with `options.multi` set to `false`.
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number>}
+     */
+    removeOne(query, options = {}) {
+        return this.remove(query, { ...options, multi: false });
+    }
+
+    /**
+     * Remove all documents that match the specified `query`.
+     *
+     * This is just an alias for `remove` with `options.multi` set to `true`.
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number>}
+     */
+    removeMany(query, options = {}) {
+        return this.remove(query, { ...options, multi: true });
+    }
+
+    /**
+     * Remove the first document that matches the specified `query`.
+     *
+     * This is just an alias for `removeOne`.
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number>}
+     */
+    deleteOne(query, options) {
+        return this.removeOne(query, options);
+    }
+
+    /**
+     * Remove all documents that match the specified `query`.
+     *
+     * This is just an alias for `removeMany`.
+     * 
+     * @param  {Object} [query]
+     * @param  {Object} [options]
+     * 
+     * @return {Promise<number>}
+     */
+    deleteMany(query, options) {
+        return this.removeMany(query, options);
     }
 
     /**
@@ -320,7 +432,7 @@ class Datastore extends EventEmitter {
      * https://github.com/louischatriot/nedb#indexing
      * 
      * @param  {Object} options
-     * @return {Promise.<undefined>}
+     * @return {Promise<undefined>}
      */
     async ensureIndex(options) {
         try {
@@ -328,7 +440,7 @@ class Datastore extends EventEmitter {
             this.broadcastSuccess('ensureIndex', result, options);
             return result;
         } catch (error) {
-            this.broadcastError('ensureIndex', error, field);
+            this.broadcastError('ensureIndex', error, options);
             throw error;
         }
     }
@@ -337,7 +449,7 @@ class Datastore extends EventEmitter {
      * https://github.com/louischatriot/nedb#indexing
      * 
      * @param  {string} field
-     * @return {Promise.<undefined>}
+     * @return {Promise<undefined>}
      */
     async removeIndex(field) {
         try {

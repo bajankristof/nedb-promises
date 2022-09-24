@@ -154,8 +154,16 @@ that failed. (Check out the third example!)
         * [.find([query], [projection])](#Datastore+find) ⇒ [<code>Cursor</code>](#Cursor)
         * [.findOne([query], [projection])](#Datastore+findOne) ⇒ [<code>Cursor</code>](#Cursor)
         * [.insert(docs)](#Datastore+insert) ⇒ <code>Promise.&lt;(Object\|Array.&lt;Object&gt;)&gt;</code>
+        * [.insertOne(doc)](#Datastore+insertOne) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.insertMany(docs)](#Datastore+insertMany) ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
         * [.update(query, update, [options])](#Datastore+update) ⇒ <code>Promise.&lt;(number\|Object\|Array.&lt;Object&gt;)&gt;</code>
+        * [.updateOne(query, update, [options])](#Datastore+updateOne) ⇒ <code>Promise.&lt;(number\|Object)&gt;</code>
+        * [.updateMany(query, update, [options])](#Datastore+updateMany) ⇒ <code>Promise.&lt;(number\|Array.&lt;Object&gt;)&gt;</code>
         * [.remove([query], [options])](#Datastore+remove) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.removeOne([query], [options])](#Datastore+removeOne) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.removeMany([query], [options])](#Datastore+removeMany) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.deleteOne([query], [options])](#Datastore+deleteOne) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.deleteMany([query], [options])](#Datastore+deleteMany) ⇒ <code>Promise.&lt;number&gt;</code>
         * [.count([query])](#Datastore+count) ⇒ [<code>Cursor</code>](#Cursor)
         * [.ensureIndex(options)](#Datastore+ensureIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
         * [.removeIndex(field)](#Datastore+removeIndex) ⇒ <code>Promise.&lt;undefined&gt;</code>
@@ -242,7 +250,7 @@ operation issued against the datastore
 <a name="Datastore+find"></a>
 
 ### datastore.find([query], [projection]) ⇒ [<code>Cursor</code>](#Cursor)
-Find documents that match a query.
+Find documents that match the specified `query`.
 
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#finding-documents
@@ -280,7 +288,7 @@ await datastore.find({ ... }).sort({ ... })
 <a name="Datastore+findOne"></a>
 
 ### datastore.findOne([query], [projection]) ⇒ [<code>Cursor</code>](#Cursor)
-Find a document that matches a query.
+Find a document that matches the specified `query`.
 
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#finding-documents
@@ -330,10 +338,52 @@ https://github.com/louischatriot/nedb#inserting-documents
     </tr>  </tbody>
 </table>
 
+<a name="Datastore+insertOne"></a>
+
+### datastore.insertOne(doc) ⇒ <code>Promise.&lt;Object&gt;</code>
+Insert a single document.
+
+This is just an alias for `insert` with object destructuring
+to ensure a single document.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>doc</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+insertMany"></a>
+
+### datastore.insertMany(docs) ⇒ <code>Promise.&lt;Array.&lt;Object&gt;&gt;</code>
+Insert multiple documents.
+
+This is just an alias for `insert` with array destructuring
+to ensure multiple documents.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>docs</td><td><code>Array.&lt;Object&gt;</code></td>
+    </tr>  </tbody>
+</table>
+
 <a name="Datastore+update"></a>
 
 ### datastore.update(query, update, [options]) ⇒ <code>Promise.&lt;(number\|Object\|Array.&lt;Object&gt;)&gt;</code>
-Update documents that match a query.
+Update documents that match the specified `query`.
 
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#updating-documents
@@ -360,13 +410,149 @@ with an array of objects.
     </tr>  </tbody>
 </table>
 
+<a name="Datastore+updateOne"></a>
+
+### datastore.updateOne(query, update, [options]) ⇒ <code>Promise.&lt;(number\|Object)&gt;</code>
+Update a single document that matches the specified `query`.
+
+This is just an alias for `update` with `options.multi` set to `false`.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>query</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>update</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+updateMany"></a>
+
+### datastore.updateMany(query, update, [options]) ⇒ <code>Promise.&lt;(number\|Array.&lt;Object&gt;)&gt;</code>
+Update multiple documents that match the specified `query`.
+
+This is just an alias for `update` with `options.multi` set to `true`.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>query</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>update</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
 <a name="Datastore+remove"></a>
 
 ### datastore.remove([query], [options]) ⇒ <code>Promise.&lt;number&gt;</code>
-Remove documents that match a query.
+Remove documents that match the specified `query`.
 
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#removing-documents
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[query]</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+removeOne"></a>
+
+### datastore.removeOne([query], [options]) ⇒ <code>Promise.&lt;number&gt;</code>
+Remove the first document that matches the specified `query`.
+
+This is just an alias for `remove` with `options.multi` set to `false`.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[query]</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+removeMany"></a>
+
+### datastore.removeMany([query], [options]) ⇒ <code>Promise.&lt;number&gt;</code>
+Remove all documents that match the specified `query`.
+
+This is just an alias for `remove` with `options.multi` set to `true`.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[query]</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+deleteOne"></a>
+
+### datastore.deleteOne([query], [options]) ⇒ <code>Promise.&lt;number&gt;</code>
+Remove the first document that matches the specified `query`.
+
+This is just an alias for `removeOne`.
+
+**Kind**: instance method of [<code>Datastore</code>](#Datastore)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>[query]</td><td><code>Object</code></td>
+    </tr><tr>
+    <td>[options]</td><td><code>Object</code></td>
+    </tr>  </tbody>
+</table>
+
+<a name="Datastore+deleteMany"></a>
+
+### datastore.deleteMany([query], [options]) ⇒ <code>Promise.&lt;number&gt;</code>
+Remove all documents that match the specified `query`.
+
+This is just an alias for `removeMany`.
 
 **Kind**: instance method of [<code>Datastore</code>](#Datastore)  
 <table>
