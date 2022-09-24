@@ -350,8 +350,18 @@ declare namespace NeDB {
     /**
      * Create a database instance.
      *
-     * Use this over `new Datastore(...)` to access original nedb datastore
-     * properties, such as `datastore.persistence`.
+     * Use this over `new Datastore(...)` to access
+     * original nedb datastore properties, such as
+     * `datastore.persistence`.
+     *
+     * Note that this method only creates the `Datastore`
+     * class instance, not the datastore file itself.
+     * The file will only be created once an operation
+     * is issued against the datastore or if you call
+     * the `load` instance method explicitly.
+     * 
+     * The path (if specified) will be relative to `process.cwd()`
+     * (unless an absolute path was passed).
      *
      * For more information visit:
      * https://github.com/louischatriot/nedb#creatingloading-a-database
@@ -362,8 +372,18 @@ declare namespace NeDB {
     /**
      * Create a database instance.
      *
-     * Use this over `new Datastore(...)` to access original nedb datastore
-     * properties, such as `datastore.persistence`.
+     * Use this over `new Datastore(...)` to access
+     * original nedb datastore properties, such as
+     * `datastore.persistence`.
+     *
+     * Note that this method only creates the `Datastore`
+     * class instance, not the datastore file itself.
+     * The file will only be created once an operation
+     * is issued against the datastore or if you call
+     * the `load` instance method explicitly.
+     * 
+     * The path (if specified) will be relative to `process.cwd()`
+     * (unless an absolute path was passed).
      *
      * For more information visit:
      * https://github.com/louischatriot/nedb#creatingloading-a-database
@@ -384,7 +404,7 @@ declare namespace NeDB {
     load(): Promise<void>;
 
     /**
-     * Find documents that match a query.
+     * Find documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#finding-documents
@@ -407,7 +427,7 @@ declare namespace NeDB {
     ): FindCursor<TDocument & TSchema>;
 
     /**
-     * Find a document that matches a query.
+     * Find a document that matches the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#finding-documents
@@ -442,14 +462,37 @@ declare namespace NeDB {
     insert<TSchema>(
       docs: TSchema[],
     ): Promise<(TDocument & TSchema)[]>;
+
+    /**
+     * Insert a single document.
+     *
+     * This is just an alias for `insert` with object destructuring
+     * to ensure a single document.
+     */
+    insertOne<TSchema>(
+      doc: TSchema,
+    ): Promise<TDocument & TSchema>;
+
+    /**
+     * Insert multiple documents.
+     *
+     * This is just an alias for `insert` with array destructuring
+     * to ensure multiple documents.
+     */
+    insertMany<TSchema>(
+      docs: TSchema[],
+    ): Promise<(TDocument & TSchema)[]>;
   
     /**
-     * Update a document that matches a query.
-     * Insert a new document corresponding to the `update` rules
-     * if no matching document was found.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
     update<TSchema>(
       query: Query,
@@ -457,12 +500,15 @@ declare namespace NeDB {
       options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi?: false },
     ): Promise<TDocument & TSchema>;
     /**
-     * Update documents that match a query.
-     * Insert a new document corresponding to the `update` rules
-     * if no matching document was found.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
     update<TSchema>(
       query: Query,
@@ -470,10 +516,15 @@ declare namespace NeDB {
       options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi: true },
     ): Promise<(TDocument & TSchema)[] | (TDocument & TSchema)>;
     /**
-     * Update a document that matches a query.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
     update<TSchema>(
       query: Query,
@@ -481,10 +532,15 @@ declare namespace NeDB {
       options: UpdateOptions & { returnUpdatedDocs: true; upsert?: false; multi?: false },
     ): Promise<(TDocument & TSchema) | null>;
     /**
-     * Update documents that match a query.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
     update<TSchema>(
       query: Query,
@@ -492,10 +548,15 @@ declare namespace NeDB {
       options: UpdateOptions & { returnUpdatedDocs: true; multi: true },
     ): Promise<(TDocument & TSchema)[]>;
     /**
-     * Update documents that match a query.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
     update<TSchema>(
       query: Query,
@@ -503,10 +564,15 @@ declare namespace NeDB {
       options?: UpdateOptions,
     ): Promise<number>;
     /**
-     * Update documents that match a query.
+     * Update documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#updating-documents
+     *
+     * If you set `options.returnUpdatedDocs`,
+     * the returned promise will resolve with
+     * an object (if `options.multi` is `false`) or
+     * with an array of objects.
      */
      update(
       query: Query,
@@ -515,7 +581,89 @@ declare namespace NeDB {
     ): Promise<number>;
 
     /**
-     * Remove documents that match a query.
+     * Update a single document that matches the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `false`.
+     */
+    updateOne<TSchema>(
+      query: Query,
+      update: Update,
+      options: UpdateOptions & { returnUpdatedDocs: true; upsert: true },
+    ): Promise<TDocument & TSchema>;
+    /**
+     * Update a single document that matches the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `false`.
+     */
+    updateOne<TSchema>(
+      query: Query,
+      update: Update,
+      options: UpdateOptions & { returnUpdatedDocs: true; upsert?: false },
+    ): Promise<(TDocument & TSchema) | null>;
+    /**
+     * Update a single document that matches the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `false`.
+     */
+    updateOne<TSchema>(
+      query: Query,
+      update: Update,
+      options?: UpdateOptions,
+    ): Promise<number>;
+    /**
+     * Update a single document that matches the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `false`.
+     */
+    updateOne(
+      query: Query,
+      update: Update,
+      options?: UpdateOptions,
+    ): Promise<number>;
+
+    /**
+     * Update multiple documents that match the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `true`.
+     */
+    updateMany<TSchema>(
+      query: Query,
+      update: Update,
+      options: UpdateOptions & { returnUpdatedDocs: true; upsert: true },
+    ): Promise<(TDocument & TSchema)[] | (TDocument & TSchema)>;
+    /**
+     * Update multiple documents that match the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `true`.
+     */
+    updateMany<TSchema>(
+      query: Query,
+      update: Update,
+      options: UpdateOptions & { returnUpdatedDocs: true },
+    ): Promise<(TDocument & TSchema)[]>;
+    /**
+     * Update multiple documents that match the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `true`.
+     */
+    updateMany<TSchema>(
+      query: Query,
+      update: Update,
+      options?: UpdateOptions,
+    ): Promise<number>;
+    /**
+     * Update multiple documents that match the specified `query`.
+     *
+     * This is just an alias for `update` with `options.multi` set to `true`.
+     */
+    updateMany(
+      query: Query,
+      update: Update,
+      options?: UpdateOptions,
+    ): Promise<number>;
+
+    /**
+     * Remove documents that match the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#removing-documents
@@ -523,7 +671,35 @@ declare namespace NeDB {
     remove(query: Query, options: RemoveOptions): Promise<number>;
 
     /**
-     * Count all documents matching the query.
+     * Remove the first document that matches the specified `query`.
+     *
+     * This is just an alias for `remove` with `options.multi` set to `false`.
+     */
+    removeOne(query: Query, options: RemoveOptions): Promise<number>;
+
+    /**
+     * Remove all documents that match the specified `query`.
+     *
+     * This is just an alias for `remove` with `options.multi` set to `true`.
+     */
+    removeMany(query: Query, options: RemoveOptions): Promise<number>;
+
+    /**
+     * Remove the first document that matches the specified `query`.
+     *
+     * This is just an alias for `removeOne`.
+     */
+    deleteOne(query: Query, options: RemoveOptions): Promise<number>;
+
+    /**
+     * Remove all documents that match the specified `query`.
+     *
+     * This is just an alias for `removeMany`.
+     */
+    deleteMany(query: Query, options: RemoveOptions): Promise<number>;
+
+    /**
+     * Count documents matching the specified `query`.
      */
     count(query: Query): Promise<number>;
 

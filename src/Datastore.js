@@ -407,7 +407,7 @@ class Datastore extends EventEmitter {
     }
 
     /**
-     * Count documents that match a query.
+     * Count documents matching the specified `query`.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#counting-documents
