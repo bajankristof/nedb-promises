@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/bajankristof/nedb-promises#readme",
   "dependencies": {
-    "@seald-io/nedb": "^3.1.0"
+    "@seald-io/nedb": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^8.6.0",
     "jest": "^29.0.3",
-    "jsdoc-to-markdown": "^7.1.0"
+    "jsdoc-to-markdown": "^8.0.0"
   }
 }

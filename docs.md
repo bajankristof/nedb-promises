@@ -572,7 +572,7 @@ This is just an alias for `removeMany`.
 <a name="Datastore+count"></a>
 
 ### datastore.count([query]) ⇒ [<code>Cursor</code>](#Cursor)
-Count documents that match a query.
+Count documents matching the specified `query`.
 
 It's basically the same as the original:
 https://github.com/louischatriot/nedb#counting-documents
