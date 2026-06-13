@@ -7,7 +7,7 @@ class Cursor {
     constructor(datastore, op, ...args) {
         const cursor = datastore.__original[op](...args);
         if (!(cursor instanceof OriginalCursor)) {
-            throw new TypeError(`Unexpected ${typeof original}, expected: Cursor (nedb/lib/cursor)`);
+            throw new TypeError(`Unexpected ${typeof cursor}, expected: Cursor (nedb/lib/cursor)`);
         }
 
         Object.defineProperties(this, {
