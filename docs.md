@@ -126,7 +126,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 
 ## Datastore
 **Kind**: global class  
-**Summary**: As of v2.0.0 the Datastore class extends node's built 
+**Summary**: As of v2.0.0 the Datastore class extends node's built
 in EventEmitter class and implements each method as an event
 plus additional error events. It also inherits the `compaction.done`
 event from nedb but for consistency, in this library the event
@@ -138,12 +138,12 @@ and then the arguments of the called method. (Check out the first example!)
 
 All events have a matching error event that goes by the name of `${method}Error`,
 for example `findError` or `loadError`. The callbacks of these events will receive
-the same parameters as the normal event handlers except that instead of the 
+the same parameters as the normal event handlers except that instead of the
 operation result there will be an operation error. (Check out the second example!)
 
 A generic `__error__` event is also available. This event will be emitted at any of
 the above error events. The callbacks of this event will receive the same parameters
-as the specific error event handlers except that there will be one more parameter 
+as the specific error event handlers except that there will be one more parameter
 passed between the datastore and the error object, that being the name of the method
 that failed. (Check out the third example!)  
 

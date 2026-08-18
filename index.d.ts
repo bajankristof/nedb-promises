@@ -1,17 +1,18 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from "node:events";
 
+// biome-ignore-start lint/suspicious/noExplicitAny: I don't care...
 declare namespace NeDB {
   type Query = {
     [key: string]: any;
-  }
+  };
 
   type Update = {
     [key: string]: any;
-  }
+  };
 
   type Projection<TSchema> = {
     [p in keyof TSchema]?: number;
-  }
+  };
 
   interface Persistence {
     /**
@@ -66,13 +67,15 @@ declare namespace NeDB {
 
     /**
      * Set the document projection.
-     * 
+     *
      * See: https://github.com/louischatriot/nedb#projections
      */
     project(projection: Projection<TSchema>): this;
   }
 
-  interface FindCursor<TSchema> extends AbstractCursor<TSchema>, Promise<TSchema[]> {
+  interface FindCursor<TSchema>
+    extends AbstractCursor<TSchema>,
+      Promise<TSchema[]> {
     /**
      * Execute the cursor.
      *
@@ -96,7 +99,9 @@ declare namespace NeDB {
     exec(): Promise<TSchema[]>;
   }
 
-  interface FindOneCursor<TSchema> extends AbstractCursor<TSchema>, Promise<TSchema | null> {
+  interface FindOneCursor<TSchema>
+    extends AbstractCursor<TSchema>,
+      Promise<TSchema | null> {
     /**
      * Execute the cursor.
      *
@@ -127,100 +132,100 @@ declare namespace NeDB {
      * with a `~` which is used in the temporary files NeDB uses to perform
      * crash-safe writes.
      */
-     filename?: string;
+    filename?: string;
 
-     /**
-      * As the name implies...
-      * 
-      * Defaults to `false`.
-      */
-     inMemoryOnly?: boolean;
- 
-     /**
-      * Timestamp the insertion and last update of all documents, with the
-      * fields createdAt and updatedAt. User-specified values override
-      * automatic generation, usually useful for testing.
-      *
-      * Defaults to `false`.
-      */
-     timestampData?: boolean;
- 
-     /**
-      * If used, the database will automatically be loaded from the datafile
-      * upon creation (you don't need to call `load`). Any command issued
-      * before load is finished is buffered and will be executed when load is
-      * done.
-      *
-      * Defaults to `false`.
-      */
-     autoload?: boolean;
- 
-     /**
-      * If you use autoloading, this is the handler called after `load`. It
-      * takes one error argument. If you use autoloading without specifying
-      * this handler, and an error happens during load, an error will be
-      * thrown.
-      */
-     onload?(error: Error): any;
- 
-     /**
-      * Hook you can use to transform data after it was serialized and before
-      * it is written to disk. Can be used for example to encrypt data before
-      * writing database to disk. This function takes a string as parameter
-      * (one line of an NeDB data file) and outputs the transformed string,
-      * which must absolutely not contain a `\n` character (or data will be
-      * lost).
-      */
-     afterSerialization?(line: string): string;
- 
-     /**
-      * Inverse of afterSerialization. Make sure to include both and not just
-      * one or you risk data loss. For the same reason, make sure both
-      * functions are inverses of one another.
-      *
-      * Some failsafe mechanisms are in place to prevent data loss if you
-      * misuse the serialization hooks: NeDB checks that never one is declared
-      * without the other, and checks that they are reverse of one another by
-      * testing on random strings of various lengths. In addition, if too much
-      * data is detected as corrupt, NeDB will refuse to start as it could mean
-      * you're not using the deserialization hook corresponding to the
-      * serialization hook used before.
-      */
-     beforeDeserialization?(line: string): string;
- 
-     /**
-      * Between 0 and 1, defaults to 10%. NeDB will refuse to start if more
-      * than this percentage of the datafile is corrupt. 0 means you don't
-      * tolerate any corruption, 1 means you don't care.
-      */
-     corruptAlertThreshold?: number;
- 
-     /**
-      * Compares strings `a` and `b` and returns -1, 0 or 1. If specified, it
-      * overrides default string comparison which is not well adapted to non-US
-      * characters in particular accented letters. Native `localCompare` will
-      * most of the time be the right choice.
-      */
-     compareStrings?(a: string, b: string): number;
- 
-     /**
-      * If you are using NeDB from whithin a Node Webkit app, specify its name
-      * (the same one you use in the package.json) in this field and the
-      * filename will be relative to the directory Node Webkit uses to store
-      * the rest of the application's data (local storage etc.). It works on
-      * Linux, OS X and Windows. Now that you can use
-      * `require('nw.gui').App.dataPath` in Node Webkit to get the path to the
-      * data directory for your application, you should not use this option
-      * anymore and it will be removed.
-      * @deprecated
-      */
-     nodeWebkitAppName?: string;
-  }
+    /**
+     * As the name implies...
+     *
+     * Defaults to `false`.
+     */
+    inMemoryOnly?: boolean;
+
+    /**
+     * Timestamp the insertion and last update of all documents, with the
+     * fields createdAt and updatedAt. User-specified values override
+     * automatic generation, usually useful for testing.
+     *
+     * Defaults to `false`.
+     */
+    timestampData?: boolean;
+
+    /**
+     * If used, the database will automatically be loaded from the datafile
+     * upon creation (you don't need to call `load`). Any command issued
+     * before load is finished is buffered and will be executed when load is
+     * done.
+     *
+     * Defaults to `false`.
+     */
+    autoload?: boolean;
+
+    /**
+     * If you use autoloading, this is the handler called after `load`. It
+     * takes one error argument. If you use autoloading without specifying
+     * this handler, and an error happens during load, an error will be
+     * thrown.
+     */
+    onload?(error: Error): any;
+
+    /**
+     * Hook you can use to transform data after it was serialized and before
+     * it is written to disk. Can be used for example to encrypt data before
+     * writing database to disk. This function takes a string as parameter
+     * (one line of an NeDB data file) and outputs the transformed string,
+     * which must absolutely not contain a `\n` character (or data will be
+     * lost).
+     */
+    afterSerialization?(line: string): string;
+
+    /**
+     * Inverse of afterSerialization. Make sure to include both and not just
+     * one or you risk data loss. For the same reason, make sure both
+     * functions are inverses of one another.
+     *
+     * Some failsafe mechanisms are in place to prevent data loss if you
+     * misuse the serialization hooks: NeDB checks that never one is declared
+     * without the other, and checks that they are reverse of one another by
+     * testing on random strings of various lengths. In addition, if too much
+     * data is detected as corrupt, NeDB will refuse to start as it could mean
+     * you're not using the deserialization hook corresponding to the
+     * serialization hook used before.
+     */
+    beforeDeserialization?(line: string): string;
+
+    /**
+     * Between 0 and 1, defaults to 10%. NeDB will refuse to start if more
+     * than this percentage of the datafile is corrupt. 0 means you don't
+     * tolerate any corruption, 1 means you don't care.
+     */
+    corruptAlertThreshold?: number;
+
+    /**
+     * Compares strings `a` and `b` and returns -1, 0 or 1. If specified, it
+     * overrides default string comparison which is not well adapted to non-US
+     * characters in particular accented letters. Native `localCompare` will
+     * most of the time be the right choice.
+     */
+    compareStrings?(a: string, b: string): number;
+
+    /**
+     * If you are using NeDB from whithin a Node Webkit app, specify its name
+     * (the same one you use in the package.json) in this field and the
+     * filename will be relative to the directory Node Webkit uses to store
+     * the rest of the application's data (local storage etc.). It works on
+     * Linux, OS X and Windows. Now that you can use
+     * `require('nw.gui').App.dataPath` in Node Webkit to get the path to the
+     * data directory for your application, you should not use this option
+     * anymore and it will be removed.
+     * @deprecated
+     */
+    nodeWebkitAppName?: string;
+  };
 
   type UpdateOptions = {
     /**
      * Allows the modification of several documents if set to `true`.
-     * 
+     *
      * Defaults to `false`.
      */
     multi?: boolean;
@@ -231,7 +236,7 @@ declare namespace NeDB {
      * with no modifiers, it is the inserted document. In the other case, the
      * `query` is stripped from all operator recursively, and the `update` is
      * applied to it.
-     * 
+     *
      * Defaults to `false`.
      */
     upsert?: boolean;
@@ -245,7 +250,7 @@ declare namespace NeDB {
      * Defaults to `false`.
      */
     returnUpdatedDocs?: boolean;
-  }
+  };
 
   type RemoveOptions = {
     /**
@@ -254,7 +259,7 @@ declare namespace NeDB {
      * Defaults to `false`.
      */
     multi?: boolean;
-  }
+  };
 
   type IndexOptions = {
     /**
@@ -283,11 +288,11 @@ declare namespace NeDB {
      * the indexed field is not specified or not a Date object are ignored.
      */
     expireAfterSeconds?: number;
-  }
+  };
 
   /**
    * @summary
-   * As of v2.0.0 the Datastore class extends node's built 
+   * As of v2.0.0 the Datastore class extends node's built
    * in EventEmitter class and implements each method as an event
    * plus additional error events. It also inherits the `compaction.done`
    * event from nedb but for consistency, in this library the event
@@ -299,12 +304,12 @@ declare namespace NeDB {
    *
    * All events have a matching error event that goes by the name of `${method}Error`,
    * for example `findError` or `loadError`. The callbacks of these events will receive
-   * the same parameters as the normal event handlers except that instead of the 
+   * the same parameters as the normal event handlers except that instead of the
    * operation result there will be an operation error. (Check out the second example!)
    *
    * A generic `__error__` event is also available. This event will be emitted at any of
    * the above error events. The callbacks of this event will receive the same parameters
-   * as the specific error event handlers except that there will be one more parameter 
+   * as the specific error event handlers except that there will be one more parameter
    * passed between the datastore and the error object, that being the name of the method
    * that failed. (Check out the third example!)
    *
@@ -339,7 +344,7 @@ declare namespace NeDB {
    *     // for example
    *     // datastore, 'find', error, [{ foo: 'bar' }, {}]
    * })
-   * 
+   *
    * @class
    */
   class Datastore<TDocument> extends EventEmitter {
@@ -359,7 +364,7 @@ declare namespace NeDB {
      * The file will only be created once an operation
      * is issued against the datastore or if you call
      * the `load` instance method explicitly.
-     * 
+     *
      * The path (if specified) will be relative to `process.cwd()`
      * (unless an absolute path was passed).
      *
@@ -368,7 +373,7 @@ declare namespace NeDB {
      */
     static create(
       pathOrOptions: DatastoreOptions & { timestampData: true },
-    ): Datastore<{ _id: string, createdAt: Date, updatedAt: Date }>;
+    ): Datastore<{ _id: string; createdAt: Date; updatedAt: Date }>;
     /**
      * Create a database instance.
      *
@@ -381,7 +386,7 @@ declare namespace NeDB {
      * The file will only be created once an operation
      * is issued against the datastore or if you call
      * the `load` instance method explicitly.
-     * 
+     *
      * The path (if specified) will be relative to `process.cwd()`
      * (unless an absolute path was passed).
      *
@@ -450,18 +455,14 @@ declare namespace NeDB {
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#inserting-documents
      */
-    insert<TSchema>(
-      docs: TSchema,
-    ): Promise<TDocument & TSchema>;
+    insert<TSchema>(docs: TSchema): Promise<TDocument & TSchema>;
     /**
      * Insert an array of documents.
      *
      * It's basically the same as the original:
      * https://github.com/louischatriot/nedb#inserting-documents
      */
-    insert<TSchema>(
-      docs: TSchema[],
-    ): Promise<(TDocument & TSchema)[]>;
+    insert<TSchema>(docs: TSchema[]): Promise<(TDocument & TSchema)[]>;
 
     /**
      * Insert a single document.
@@ -469,9 +470,7 @@ declare namespace NeDB {
      * This is just an alias for `insert` with object destructuring
      * to ensure a single document.
      */
-    insertOne<TSchema>(
-      doc: TSchema,
-    ): Promise<TDocument & TSchema>;
+    insertOne<TSchema>(doc: TSchema): Promise<TDocument & TSchema>;
 
     /**
      * Insert multiple documents.
@@ -479,10 +478,8 @@ declare namespace NeDB {
      * This is just an alias for `insert` with array destructuring
      * to ensure multiple documents.
      */
-    insertMany<TSchema>(
-      docs: TSchema[],
-    ): Promise<(TDocument & TSchema)[]>;
-  
+    insertMany<TSchema>(docs: TSchema[]): Promise<(TDocument & TSchema)[]>;
+
     /**
      * Update documents that match the specified `query`.
      *
@@ -497,7 +494,11 @@ declare namespace NeDB {
     update<TSchema>(
       query: Query,
       update: Update,
-      options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi?: false },
+      options: UpdateOptions & {
+        returnUpdatedDocs: true;
+        upsert: true;
+        multi?: false;
+      },
     ): Promise<TDocument & TSchema>;
     /**
      * Update documents that match the specified `query`.
@@ -513,7 +514,11 @@ declare namespace NeDB {
     update<TSchema>(
       query: Query,
       update: Update,
-      options: UpdateOptions & { returnUpdatedDocs: true; upsert: true; multi: true },
+      options: UpdateOptions & {
+        returnUpdatedDocs: true;
+        upsert: true;
+        multi: true;
+      },
     ): Promise<(TDocument & TSchema)[] | (TDocument & TSchema)>;
     /**
      * Update documents that match the specified `query`.
@@ -529,7 +534,11 @@ declare namespace NeDB {
     update<TSchema>(
       query: Query,
       update: Update,
-      options: UpdateOptions & { returnUpdatedDocs: true; upsert?: false; multi?: false },
+      options: UpdateOptions & {
+        returnUpdatedDocs: true;
+        upsert?: false;
+        multi?: false;
+      },
     ): Promise<(TDocument & TSchema) | null>;
     /**
      * Update documents that match the specified `query`.
@@ -574,7 +583,7 @@ declare namespace NeDB {
      * an object (if `options.multi` is `false`) or
      * with an array of objects.
      */
-     update(
+    update(
       query: Query,
       update: Update,
       options?: UpdateOptions,
@@ -716,5 +725,6 @@ declare namespace NeDB {
     removeIndex(fieldName: string): Promise<void>;
   }
 }
+// biome-ignore-end lint/suspicious/noExplicitAny: I don't care...
 
 export = NeDB.Datastore;

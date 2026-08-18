@@ -1,16 +1,21 @@
-const Cursor = require('../src/Cursor');
-const Datastore = require('../src/Datastore');
-const Persistence = require('@seald-io/nedb/lib/persistence');
+const assert = require("node:assert");
+const { describe, it } = require("node:test");
+const Cursor = require("../src/Cursor");
+const Datastore = require("../src/Datastore");
+const Persistence = require("@seald-io/nedb/lib/persistence");
 
-describe('testing datastore proxy', () => {
-    const datastore = Datastore.create('test.db');
+describe("testing datastore proxy", () => {
+  const datastore = Datastore.create("test.db");
 
-    it('should not affect promise returns', () => {
-        expect(datastore.find({}) instanceof Cursor).toBe(true);
-        expect(datastore.insert({ proxy: true }) instanceof Promise).toBe(true);
-    });
+  it("should not affect promise returns", () => {
+    assert.strictEqual(datastore.find({}) instanceof Cursor, true);
+    assert.strictEqual(
+      datastore.insert({ proxy: true }) instanceof Promise,
+      true,
+    );
+  });
 
-    it('should return original datastore values', () => {
-        expect(datastore.persistence instanceof Persistence).toBe(true);
-    });
+  it("should return original datastore values", () => {
+    assert.strictEqual(datastore.persistence instanceof Persistence, true);
+  });
 });
